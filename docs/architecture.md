@@ -49,12 +49,4 @@ Each service owns its database and schema. No cross-service database access.
 Services reference members by UUID (from hh-users seed identities defined
 in `hh-shared/seeds/identities.go`).
 
-## Repositories
 
-| Repo | Purpose |
-|---|---|
-| [hh-shared](https://github.com/tiagorocha94/hh-shared) | Shared Go library (config, middleware, testutil, etc.) |
-| [hh-auth](https://github.com/tiagorocha94/hh-auth) | Authentication service (JWT issuance, JWKS, user management) |
-| [hh-users](https://github.com/tiagorocha94/hh-users) | Member management |
-| [hh-goals](https://github.com/tiagorocha94/hh-goals) | Savings goals, accounts, allocations, expenses |
-| [hh](https://github.com/tiagorocha94/hh) | Monorepo — frontend, infra, investments service |

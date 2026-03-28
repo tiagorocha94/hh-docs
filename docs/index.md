@@ -1,26 +1,14 @@
-# Household Platform — Documentation
+# Household Platform — Overview
 
-Platform-wide documentation for the Household project. Service-specific docs
-live in each service repo; this repo covers cross-cutting conventions,
-architecture, and onboarding.
+The Household project is a personal household management platform. It helps
+families track and organise their shared finances — members, expenses, savings
+goals, and investments — through a set of independently deployed microservices.
 
-## Contents
+## Architecture
 
-| Document | Description |
-|---|---|
-| [Architecture](architecture.md) | Service map, data flow, tech stack |
-| [Conventions](conventions.md) | Shared coding, testing, and API conventions |
-| [New Service Checklist](new-service-checklist.md) | Step-by-step guide for adding a service |
-| [Environment Variables](environment-variables.md) | All env vars across all services |
-| [Seed Data](seed-data.md) | Shared dev seed identities and conventions |
-| [CI/CD](ci-cd.md) | Pipeline patterns and delivery workflow |
+The platform follows a polyrepo architecture: each service lives in its own
+repository, owns its own database, and is deployed independently. A shared Go
+library (`hh-shared`) provides common utilities across all services.
 
-## Repositories
-
-| Repo | Purpose | Latest |
-|---|---|---|
-| [hh-shared](https://github.com/tiagorocha94/hh-shared) | Shared Go library | v0.10.0 |
-| [hh-auth](https://github.com/tiagorocha94/hh-auth) | Authentication service (JWT, JWKS) | v0.2.0 |
-| [hh-users](https://github.com/tiagorocha94/hh-users) | Member management | v0.4.0 |
-| [hh-goals](https://github.com/tiagorocha94/hh-goals) | Savings goals, accounts, allocations | v0.2.0 |
-| [hh](https://github.com/tiagorocha94/hh) | Monorepo (FE, infra, investments) | — |
+See [Architecture](architecture.md) for the tech stack, auth flow, and data
+ownership model.

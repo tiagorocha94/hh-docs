@@ -35,9 +35,9 @@ Steps for adding a new hh-* service to the platform.
 ## 5. Documentation
 
 - [ ] `docs/openapi.yaml` — full API spec with `securitySchemes`, 401/403 responses
-- [ ] `docs/service.md` — service overview
 - [ ] `docs/database.md` — schema and design decisions
 - [ ] `README.md` — version, quick start, link to hh-docs for platform conventions
+- [ ] Add service page to hh-docs (`repositories/<service>.md`)
 
 ## 6. CI/CD
 
