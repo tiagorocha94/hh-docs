@@ -23,6 +23,26 @@
 4. `middleware.JWTAuth` (from hh-shared) handles validation, key caching, and identity extraction
 5. `reqctx.Identity` propagates user/member/role through the request context
 
+### Request Flow
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant R as Router
+    participant JWT as JWTAuth Middleware
+    participant AZ as Authorization Layer
+    participant H as Handler
+
+    C->>R: GET /v1/entity (Bearer token)
+    R->>JWT: Extract & validate token
+    JWT->>JWT: Fetch JWKS from auth-svc (cached)
+    JWT->>JWT: Verify ES256 signature
+    JWT->>R: Set reqctx.Identity on context
+    R->>AZ: Check route-level authorization
+    AZ->>H: Proceed to handler
+    H->>C: 200 OK
+```
+
 ## Data Ownership
 
 Each service owns its database and schema. No cross-service database access.
