@@ -1,6 +1,5 @@
 site_name: Household Platform
 site_description: Platform-wide documentation for the Household project
-docs_dir: "."
 
 theme:
   name: material
