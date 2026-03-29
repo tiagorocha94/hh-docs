@@ -27,9 +27,9 @@ A goal belongs to a member. A transaction is made by a member. An investment is 
 ## Core concepts
 
 ### Member
-A person in the household. A member has:
-- A **name** — how they appear throughout the app
-- An **email** — optional, for future notification or auth use
+A person in the household. A member has:  
+- A **name** — how they appear throughout the app  
+- An **email** — optional, for future notification or auth use  
 - An **avatar** — a color and an icon chosen from a predefined palette, used to visually distinguish members across all parts of the UI
 
 ### Avatar

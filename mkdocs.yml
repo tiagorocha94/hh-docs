@@ -17,14 +17,14 @@ theme:
 nav:
   - Overview: index.md
   - Architecture: architecture.md
-  - Conventions: conventions.md
-  - New Service Checklist: new-service-checklist.md
   - Repositories:
     - hh-shared: repositories/hh-shared.md
     - hh-auth: repositories/hh-auth.md
     - hh-users: repositories/hh-users.md
     - hh-goals: repositories/hh-goals.md
-    - hh (infra): repositories/hh-infra.md
+  - Development:
+    - Conventions: conventions.md
+    - New Service Checklist: new-service-checklist.md
 
 markdown_extensions:
   - tables

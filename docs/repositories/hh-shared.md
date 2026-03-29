@@ -1,10 +1,8 @@
 # hh-shared
 
-Shared Go library for the Household platform services.
+Shared Go library providing cross-cutting utilities for all Household services. Not a deployable service — imported as a Go module dependency.
 
-```bash
-go get github.com/tiagorocha94/hh-shared@latest
-```
+Repository: [github.com/tiagorocha94/hh-shared](https://github.com/tiagorocha94/hh-shared)
 
 ## Packages
 
@@ -27,8 +25,7 @@ go get github.com/tiagorocha94/hh-shared@latest
 
 ## Dev Seed Identities
 
-All services share fixed member UUIDs so cross-service references resolve correctly.
-Defined in `seeds/identities.go` and mirrored in `hh/fe/src/lib/seeds.ts`.
+All services share fixed member UUIDs so cross-service references resolve correctly. Defined in `seeds/identities.go` and mirrored in `hh/fe/src/lib/seeds.ts`.
 
 | Constant | UUID | Name |
 |---|---|---|
