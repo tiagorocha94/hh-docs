@@ -12,7 +12,7 @@ Household gives a family a single place to manage money together:
 - **Authentication** — secure login with email and password, JWT-based sessions
 - **Savings goals** — envelope budgeting where every saved euro gets a job
 - **Auto-distribution** — deposits are automatically split across active goals by urgency
-- **Investments** — track investment instruments, contributions, and valuations *(in progress)*
+- **Investments** — track investment instruments, contributions, and valuations
 - **Expenses** — record spending against goals to see real progress *(service planned)*
 
 ## How to navigate this site
@@ -23,3 +23,4 @@ Household gives a family a single place to manage money together:
 | [Architecture](architecture.md) | Developers | Tech stack, auth flow, data ownership |
 | [Repositories](repositories/hh-shared.md) | Developers | Per-service details, responsibilities, API surface |
 | [Development](conventions.md) | Developers | Coding conventions, CI/CD, testing, local setup |
+| [Roadmap](roadmap.md) | Anyone | Feature backlog and future improvements |

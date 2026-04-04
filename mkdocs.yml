@@ -31,6 +31,7 @@ nav:
   - Development:
     - Conventions: conventions.md
     - New Service Checklist: new-service-checklist.md
+  - Roadmap: roadmap.md
 
 markdown_extensions:
   - tables
