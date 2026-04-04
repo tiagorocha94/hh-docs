@@ -19,13 +19,13 @@ Repository: [github.com/tiagorocha94/hh-shared](https://github.com/tiagorocha94/
 | `reqctx` | Request-scoped identity (user/member/role) propagation via context |
 | `seeds` | Dev seed SQL runner + shared member UUIDs for cross-service consistency |
 | `server` | Production-ready HTTP server with graceful shutdown |
-| `testutil` | Testcontainers-based Postgres helper for integration tests |
-| `validate` | Struct validation with custom tags (`hexcolor`, `safeemail`, `safetext`, `iso_month`, `iso_date`, `positive_decimal`, `decimal`) |
 | `system` | Internal `/_system` routes: health, readiness, build info with uptime |
+| `testutil` | Test helpers: Postgres testcontainer, JWT signing, response assertions |
+| `validate` | Struct validation with custom tags (`hexcolor`, `safeemail`, `safetext`, `iso_month`, `iso_date`, `positive_decimal`, `decimal`) |
 
 ## Dev Seed Identities
 
-All services share fixed member UUIDs so cross-service references resolve correctly. Defined in `seeds/identities.go` and mirrored in `hh/fe/src/lib/seeds.ts`.
+All services share fixed member UUIDs so cross-service references resolve correctly. Defined in `seeds/identities.go`.
 
 | Constant | UUID | Name |
 |---|---|---|

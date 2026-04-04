@@ -1,14 +1,25 @@
-# Household Platform — Overview
+# Household Platform
 
-The Household project is a personal household management platform. It helps
-families track and organise their shared finances — members, expenses, savings
-goals, and investments — through a set of independently deployed microservices.
+A personal household management platform that helps families track and organise
+their shared finances — members, savings goals, and investments — through a set
+of independently deployed microservices.
 
-## Architecture
+## What it does
 
-The platform follows a polyrepo architecture: each service lives in its own
-repository, owns its own database, and is deployed independently. A shared Go
-library (`hh-shared`) provides common utilities across all services.
+Household gives a family a single place to manage money together:
 
-See [Architecture](architecture.md) for the tech stack, auth flow, and data
-ownership model.
+- **Members** — define who's in the household (names, avatars, roles)
+- **Authentication** — secure login with email and password, JWT-based sessions
+- **Savings goals** — envelope budgeting where every saved euro gets a job
+- **Auto-distribution** — deposits are automatically split across active goals by urgency
+- **Investments** — track investment instruments, contributions, and valuations *(in progress)*
+- **Expenses** — record spending against goals to see real progress *(service planned)*
+
+## How to navigate this site
+
+| Section | Audience | What you'll find |
+|---|---|---|
+| [Features](features/goals.md) | Anyone | What the platform does, how it works for users |
+| [Architecture](architecture.md) | Developers | Tech stack, auth flow, data ownership |
+| [Repositories](repositories/hh-shared.md) | Developers | Per-service details, responsibilities, API surface |
+| [Development](conventions.md) | Developers | Coding conventions, CI/CD, testing, local setup |

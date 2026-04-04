@@ -14,7 +14,7 @@ Steps for adding a new hh-* service to the platform.
 ## 2. Application Code
 
 - [ ] `cmd/main.go` — config, logger, DB, migrations, seeds, wiring, server
-- [ ] Validate `JWKS_URL` at startup (fail-fast if empty)
+- [ ] Validate config at startup: check `JWKS_URL` is not empty in `main.go` (fail-fast if missing)
 - [ ] `internal/handler/router.go` — apply `middleware.JWTAuth(ctx, jwksURL)` to `/v1`
 - [ ] Mount `/_system` routes via `system.Routes(pool, buildInfo)`
 - [ ] Serve OpenAPI docs at `/docs` and `/openapi.yaml`
@@ -35,7 +35,7 @@ Steps for adding a new hh-* service to the platform.
 ## 5. Documentation
 
 - [ ] `docs/openapi.yaml` — full API spec with `securitySchemes`, 401/403 responses
-- [ ] `docs/database.md` — schema and design decisions
+- [ ] `docs/schema.md` — schema and design decisions
 - [ ] `README.md` — version, quick start, link to hh-docs for platform conventions
 - [ ] Add service page to hh-docs (`repositories/<service>.md`)
 

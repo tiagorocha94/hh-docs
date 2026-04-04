@@ -8,19 +8,16 @@ architecture, and onboarding.
 
 | Document | Description |
 |---|---|
-| [Architecture](architecture.md) | Service map, data flow, tech stack |
-| [Conventions](conventions.md) | Shared coding, testing, and API conventions |
-| [New Service Checklist](new-service-checklist.md) | Step-by-step guide for adding a service |
-| [Environment Variables](environment-variables.md) | All env vars across all services |
-| [Seed Data](seed-data.md) | Shared dev seed identities and conventions |
-| [CI/CD](ci-cd.md) | Pipeline patterns and delivery workflow |
+| [Architecture](docs/architecture.md) | Service map, data flow, tech stack |
+| [Conventions](docs/conventions.md) | Shared coding, testing, and API conventions |
+| [New Service Checklist](docs/new-service-checklist.md) | Step-by-step guide for adding a service |
 
 ## Repositories
 
-| Repo | Purpose | Latest |
-|---|---|---|
-| [hh-shared](https://github.com/tiagorocha94/hh-shared) | Shared Go library | v0.10.0 |
-| [hh-auth](https://github.com/tiagorocha94/hh-auth) | Authentication service (JWT, JWKS) | v0.2.0 |
-| [hh-users](https://github.com/tiagorocha94/hh-users) | Member management | v0.4.0 |
-| [hh-goals](https://github.com/tiagorocha94/hh-goals) | Savings goals, accounts, allocations | v0.2.0 |
-| [hh](https://github.com/tiagorocha94/hh) | Monorepo (FE, infra, investments) | — |
+| Repo | Purpose | Document | Latest |
+|---|---|---|---|
+| [hh-shared](https://github.com/tiagorocha94/hh-shared) | Shared Go library | [hh-shared](docs/repositories/hh-shared.md) | v0.10.0 |
+| [hh-auth](https://github.com/tiagorocha94/hh-auth) | Authentication service (JWT, JWKS) | [hh-auth](docs/repositories/hh-auth.md) | v0.2.0 |
+| [hh-users](https://github.com/tiagorocha94/hh-users) | Member management | [hh-users](docs/repositories/hh-users.md) | v0.4.0 |
+| [hh-goals](https://github.com/tiagorocha94/hh-goals) | Savings goals, accounts, allocations | [hh-goals](docs/repositories/hh-goals.md) | v0.2.0 |
+| [hh](https://github.com/tiagorocha94/hh) | Monorepo (FE, infra, investments) | — | — |
