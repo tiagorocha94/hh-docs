@@ -22,7 +22,7 @@ Steps for adding a new hh-* service to the platform.
 ## 3. Database
 
 - [ ] Create `migrations/` directory with goose SQL migrations
-- [ ] Create `seeds/dev/` with idempotent dev seed SQL
+- [ ] Create `dev/seeds/` with idempotent dev seed SQL
 - [ ] Use shared member UUIDs from `hh-shared/seeds/identities.go`
 
 ## 4. Docker
