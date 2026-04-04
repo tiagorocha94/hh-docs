@@ -3,9 +3,9 @@
 > **WIP** — The orchestration layer (`hh` repo with nginx, frontend, and
 > docker-compose) is being updated to reflect the polyrepo split. The
 > documentation below describes the target architecture. Individual services
-> (hh-auth, hh-users, hh-goals) are functional and tested independently;
-> the full integrated stack will be documented once all upstream services
-> are complete and wired through nginx.
+> (hh-auth, hh-users, hh-goals, hh-investments) are functional and tested
+> independently; the full integrated stack will be documented once all
+> upstream services are complete and wired through nginx.
 
 ## Tech Stack
 

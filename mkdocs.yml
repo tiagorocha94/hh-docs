@@ -20,12 +20,14 @@ nav:
     - Authentication: features/auth.md
     - Members: features/members.md
     - Savings Goals: features/goals.md
+    - Investments: features/investments.md
   - Architecture: architecture.md
   - Repositories:
     - hh-shared: repositories/hh-shared.md
     - hh-auth: repositories/hh-auth.md
     - hh-users: repositories/hh-users.md
     - hh-goals: repositories/hh-goals.md
+    - hh-investments: repositories/hh-investments.md
   - Development:
     - Conventions: conventions.md
     - New Service Checklist: new-service-checklist.md
