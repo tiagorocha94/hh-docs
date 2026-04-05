@@ -44,8 +44,7 @@ hh-<service>/
 
 ## Local Setup
 
-Local-only files (docker-compose, init.sql, seeds) live in `dev/`. The
-Makefile abstracts this — `make up` and `make down` work the same as before.
+Local-only files (docker-compose, init.sql, seeds) live in `dev/`.
 
 ```bash
 git clone <repo>
@@ -159,8 +158,6 @@ Steps:
 5. `go build ./...`
 6. Unit tests (`go test ./... -count=1`)
 7. Integration tests (`go test ./... -tags=integration -count=1`)
-
-Tests run without `-race` (CGO is not required by the codebase).
 
 ### cd.yml — Continuous Delivery
 

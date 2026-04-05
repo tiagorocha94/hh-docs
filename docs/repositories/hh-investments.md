@@ -1,56 +1,51 @@
 # hh-investments
 
-Personal investment portfolio tracking for the Household platform.
+Investment portfolio tracking.
 
 Repository: [github.com/tiagorocha94/hh-investments](https://github.com/tiagorocha94/hh-investments)
 
-## Overview
+For what this service does and how it works, see [Features > Investments](../features/investments.md).
 
-hh-investments lets household members track their personal investment portfolios. Each member records the financial institutions they use, the investment positions they hold, the money they put in over time, and a monthly snapshot of what each position is currently worth.
+## Technical Details
 
-The goal is a simple, honest record of how a portfolio evolves — not real-time market data or automated calculations, but a deliberate monthly ritual of "I invested X, it's now worth Y".
+- Database: `hh_investments`
+- All data is per-member (entities, instruments, contributions, valuations)
+- ON DELETE CASCADE on contributions and valuations when an instrument is deleted
+- Deleting an entity or type with active instruments returns `409 Conflict`
+- Default investment types are seeded via migration (ETF, Stock, Bond, PPR, etc.)
 
-## Authentication
+### API Surface
 
-All `/v1` endpoints require a valid JWT bearer token issued by [hh-auth](hh-auth.md). The service validates tokens using a JWKS endpoint configured via the `JWKS_URL` environment variable. Requests without a valid token receive a `401 Unauthorized` response.
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/v1/types` | Bearer | List investment types |
+| POST | `/v1/types` | Bearer | Create type |
+| GET | `/v1/types/{id}` | Bearer | Get type |
+| PUT | `/v1/types/{id}` | Bearer | Update type |
+| DELETE | `/v1/types/{id}` | Bearer | Delete type |
+| GET | `/v1/entities` | Bearer | List entities |
+| POST | `/v1/entities` | Bearer | Create entity |
+| GET | `/v1/entities/{id}` | Bearer | Get entity |
+| PUT | `/v1/entities/{id}` | Bearer | Update entity |
+| DELETE | `/v1/entities/{id}` | Bearer | Delete entity |
+| GET | `/v1/instruments` | Bearer | List instruments |
+| POST | `/v1/instruments` | Bearer | Create instrument |
+| GET | `/v1/instruments/{id}` | Bearer | Get instrument |
+| PUT | `/v1/instruments/{id}` | Bearer | Update instrument |
+| DELETE | `/v1/instruments/{id}` | Bearer | Delete instrument |
+| GET | `/v1/instruments/{id}/contributions` | Bearer | List contributions |
+| POST | `/v1/instruments/{id}/contributions` | Bearer | Create contribution |
+| DELETE | `/v1/instruments/{id}/contributions/{cid}` | Bearer | Delete contribution |
+| GET | `/v1/instruments/{id}/valuations` | Bearer | List valuations |
+| PUT | `/v1/instruments/{id}/valuations/{month}` | Bearer | Upsert valuation |
+| DELETE | `/v1/instruments/{id}/valuations/{vid}` | Bearer | Delete valuation |
 
-## Core Concepts
+### Schema
 
-### Investment Type
-A category of investment instrument — ETF, Stock, Bond, Deposit, PPR, Certificados de Aforro, and so on. The service ships with a sensible default set, but members can add custom types or delete ones they will never use. Types carry a color and icon for visual identification.
-
-### Entity
-A financial institution where the member holds investments. This could be a broker (DEGIRO, IBKR), a bank (CGD, Millennium), or a state program. Entities are per-member, carry a color and icon, and act as an organisational anchor.
-
-### Instrument
-A specific investment position — a particular ETF at a particular broker, a PPR at a bank. An instrument belongs to one member, is held at one entity, and has one type. Instruments can be closed without deleting them, preserving the full history.
-
-### Contribution
-A record of money added to an instrument on a specific date. Contributions are inflows only. Immutable once created — delete and re-create to correct.
-
-### Valuation
-A manual snapshot of what an instrument is worth at the end of a given month. One valuation per instrument per month. Calling the endpoint twice for the same month updates the record (upsert semantics).
-
-## Key Behaviours
-
-- All data is per-member. Querying instruments, entities, contributions, or valuations always requires a `member_id`.
-- Deleting an instrument permanently removes its contribution and valuation history via cascade.
-- Deleting an entity or type that still has instruments fails with `409 Conflict`.
-- Valuations are entered manually. No live price feeds.
-- All monetary values are in EUR.
-
-## Limitations
-
-- No real-time prices or automated valuations.
-- Contributions are inflows only — no outflows/withdrawals yet.
-- Each instrument belongs to one member (no joint instruments).
-- All amounts in EUR (no multi-currency).
-
-## Future Directions
-
-| Capability | Notes |
-|---|---|
-| Outflows / withdrawals | Record money taken out; needed for accurate gain/loss |
-| Multi-currency | Add currency column; convert to EUR for aggregation |
-| Joint instruments | Multiple member_ids per instrument |
-| Auth integration | Filter queries by member from JWT claim |
+| Table | Key columns |
+|-------|-------------|
+| `investment_types` | id, name, color, icon |
+| `entities` | id, member_id, name, color, icon |
+| `instruments` | id, member_id, entity_id, type_id, name, status |
+| `contributions` | id, instrument_id, amount, contributed_on |
+| `valuations` | id, instrument_id, month, value (UNIQUE instrument_id+month) |

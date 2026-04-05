@@ -26,38 +26,40 @@
 
 ```mermaid
 graph TD
-    SHARED[hh-shared<br/>Go library]
-    AUTH[hh-auth]
-    USERS[hh-users]
-    GOALS[hh-goals]
-    INV[hh-investments]
-    EXP[hh-expenses]
-    WEB[hh-web]
-    INFRA[hh-infra]
+    subgraph hh-infra
+        N[nginx]
+        PG[(PostgreSQL)]
+        WEB[hh-web] -->|HTTP| N
+        N --> AUTH[hh-auth]
+        N --> USERS[hh-users]
+        N --> GOALS[hh-goals]
+        N --> INV[hh-investments]
+        N -.-> EXP[hh-expenses]
+        AUTH --> PG
+        USERS --> PG
+        GOALS --> PG
+        INV --> PG
+        EXP -.-> PG
+    end
 
+    SHARED[hh-shared<br/>Go library]
     AUTH -->|imports| SHARED
     USERS -->|imports| SHARED
     GOALS -->|imports| SHARED
     INV -->|imports| SHARED
     EXP -.->|imports| SHARED
 
-    USERS -->|JWKS| AUTH
-    GOALS -->|JWKS| AUTH
-    INV -->|JWKS| AUTH
+    USERS -.->|JWKS| AUTH
+    GOALS -.->|JWKS| AUTH
+    INV -.->|JWKS| AUTH
     EXP -.->|JWKS| AUTH
-
-    INFRA -->|orchestrates| AUTH
-    INFRA -->|orchestrates| USERS
-    INFRA -->|orchestrates| GOALS
-    INFRA -->|orchestrates| INV
-    INFRA -.->|orchestrates| EXP
-    INFRA -.->|orchestrates| WEB
 
     style EXP fill:#a8a29e,color:#fff
     style WEB fill:#a8a29e,color:#fff
+    style SHARED fill:#8b5cf6,color:#fff
 ```
 
-Solid lines are current dependencies. Dotted lines are planned.
+Solid lines are current dependencies. Dotted lines are planned or runtime-only (JWKS).
 
 ## Authentication Flow
 
