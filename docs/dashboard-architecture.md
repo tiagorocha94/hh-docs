@@ -20,15 +20,22 @@ Running these read-heavy queries against the write-optimised databases would:
 
 A dedicated hh-dashboard service that:
 
-1. Consumes events from CRUD services (via a message broker like NATS)
+1. Subscribes to domain events from CRUD services via NATS JetStream
 2. Stores denormalised, read-optimised projections in its own database
 3. Serves pre-aggregated dashboard endpoints to the frontend
 
 ```mermaid
-graph LR
-    GOALS[hh-goals] -->|events| NATS[NATS]
-    INV[hh-investments] -->|events| NATS
-    EXP[hh-expenses] -->|events| NATS
+graph TB
+    subgraph CRUD Services
+        GOALS[hh-goals]
+        INV[hh-investments]
+        EXP[hh-expenses]
+    end
+
+    GOALS -->|publish| NATS[NATS JetStream]
+    INV -->|publish| NATS
+    EXP -->|publish| NATS
+
     NATS -->|subscribe| DASH[hh-dashboard]
     DASH --> DB[(hh_dashboard)]
     WEB[hh-web] -->|read| DASH
@@ -37,42 +44,275 @@ graph LR
     style DASH fill:#6366f1,color:#fff
 ```
 
-## Data Flow
+## Why NATS
 
-CRUD services publish domain events when data changes:
+NATS is lightweight, operationally simple, and fits the scale of this project.
+JetStream provides durable message storage, replay, and consumer groups without
+the operational overhead of Kafka. A single NATS server is sufficient — clustering
+can be added later if needed.
 
-- `goal.created`, `goal.updated`, `movement.recorded`, `allocation.created`
-- `instrument.created`, `contribution.recorded`, `valuation.recorded`
-- `transaction.created`, `category.updated`
+## Event Contract
 
-hh-dashboard subscribes to these events and updates its projections. The
-projections are denormalised views optimised for the specific dashboard
-queries the frontend needs.
+### Subject Naming
+
+Subjects follow a three-part convention: `<service>.<domain>.<action>`.
+
+| Subject | When published |
+|---|---|
+| `goals.account.created` | Account created |
+| `goals.movement.created` | Deposit or withdrawal recorded |
+| `goals.goal.created` | Goal created |
+| `goals.goal.updated` | Goal updated (soft or version change) |
+| `goals.goal.status_changed` | Goal completed or cancelled |
+| `goals.allocation.upserted` | Allocation created or updated |
+| `goals.expense.created` | Expense recorded |
+| `investments.entity.created` | Entity (broker/bank) created |
+| `investments.instrument.created` | Instrument created |
+| `investments.instrument.updated` | Instrument updated (including status change) |
+| `investments.contribution.created` | Contribution recorded |
+| `investments.valuation.upserted` | Valuation created or updated |
+| `expenses.transaction.created` | Transaction recorded |
+| `expenses.transaction.deleted` | Transaction deleted |
+
+Subject constants and the envelope type are defined in `hh-shared` so all
+services import them — no string duplication, compile-time safety.
+
+```go
+// hh-shared/events/subjects.go
+package events
+
+const (
+    GoalsMovementCreated       = "goals.movement.created"
+    InvestmentsContributionCreated = "investments.contribution.created"
+    // ...
+)
+```
+
+### Envelope Format
+
+Every event uses the same envelope structure. The `payload` field carries the
+service-specific data.
+
+```json
+{
+  "version": 1,
+  "subject": "investments.contribution.created",
+  "timestamp": "2026-04-06T14:30:00Z",
+  "actor": {
+    "user_id": "u-123",
+    "member_id": "a1a1a1a1-0000-0000-0000-000000000001",
+    "role": "member"
+  },
+  "payload": {
+    "id": "c-456",
+    "instrument_id": "i-789",
+    "amount": "500.00",
+    "contributed_on": "2026-04-01"
+  }
+}
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `version` | int | Envelope schema version (increment on breaking changes) |
+| `subject` | string | Matches the NATS subject — redundant but useful for logging/debugging |
+| `timestamp` | string | ISO 8601 UTC timestamp of when the event was published |
+| `actor` | object | Identity from the JWT that triggered the action |
+| `payload` | object | Service-specific data (the created/updated entity) |
+
+The Go type lives in hh-shared:
+
+```go
+// hh-shared/events/envelope.go
+package events
+
+import "time"
+
+type Actor struct {
+    UserID   string `json:"user_id"`
+    MemberID string `json:"member_id"`
+    Role     string `json:"role"`
+}
+
+type Envelope struct {
+    Version   int             `json:"version"`
+    Subject   string          `json:"subject"`
+    Timestamp time.Time       `json:"timestamp"`
+    Actor     Actor           `json:"actor"`
+    Payload   json.RawMessage `json:"payload"`
+}
+```
+
+Services publish events by importing the subject constant and constructing
+an `Envelope` with the entity as payload. hh-dashboard subscribes by subject
+prefix (e.g. `goals.>`, `investments.>`) and deserialises the payload based
+on the subject.
+
+### Example: Recording a Contribution
+
+1. User calls `POST /v1/instruments/{id}/contributions` on hh-investments
+2. Handler creates the contribution in the database
+3. After successful commit, handler publishes to NATS:
+
+```
+Subject: investments.contribution.created
+Data: {
+  "version": 1,
+  "subject": "investments.contribution.created",
+  "timestamp": "2026-04-06T14:30:00Z",
+  "actor": {
+    "user_id": "u-123",
+    "member_id": "a1a1a1a1-0000-0000-0000-000000000001",
+    "role": "member"
+  },
+  "payload": {
+    "id": "c1100001-0000-0000-0000-000000000005",
+    "instrument_id": "01000001-0000-0000-0000-000000000001",
+    "amount": "500.00",
+    "contributed_on": "2026-04-01"
+  }
+}
+```
+
+4. hh-dashboard receives the event, updates the investment projection for
+   Alice's portfolio for 2026-04
+
+## Projection Storage
+
+### Schema
+
+Projections are stored as monthly snapshots in a single table. All dashboard
+queries filter by `year + month` range — the smallest granularity is one month.
+
+```sql
+CREATE TABLE dashboard_snapshots (
+    id        UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+    service   TEXT        NOT NULL,  -- 'goals', 'investments', 'expenses'
+    metric    TEXT        NOT NULL,  -- 'portfolio_summary', 'savings_progress', ...
+    member_id UUID,                  -- NULL for household-wide metrics
+    year      INT         NOT NULL,
+    month     INT         NOT NULL CHECK (month BETWEEN 1 AND 12),
+    value     JSONB       NOT NULL,  -- aggregated data for this month
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE (service, metric, member_id, year, month)
+);
+
+CREATE INDEX idx_snapshots_lookup
+    ON dashboard_snapshots (service, metric, member_id, year, month);
+```
+
+The UNIQUE constraint means processing the same event twice (idempotency)
+just updates the existing row via upsert.
+
+### Example: Investment Portfolio Snapshot
+
+For Alice, April 2026:
+
+```json
+{
+  "service": "investments",
+  "metric": "portfolio_summary",
+  "member_id": "a1a1a1a1-0000-0000-0000-000000000001",
+  "year": 2026,
+  "month": 4,
+  "value": {
+    "total_invested": "4750.00",
+    "portfolio_value": "5120.00",
+    "pct_change": 7.79,
+    "instrument_count": 2,
+    "by_type": [
+      { "type": "ETF", "invested": "2750.00", "value": "3020.00" },
+      { "type": "Certificados de Aforro", "invested": "2000.00", "value": "2100.00" }
+    ],
+    "by_entity": [
+      { "entity": "DEGIRO", "invested": "2750.00", "value": "3020.00" },
+      { "entity": "CGD", "invested": "2000.00", "value": "2100.00" }
+    ]
+  }
+}
+```
+
+### Example: Household Overview Snapshot
+
+For the whole household, April 2026:
+
+```json
+{
+  "service": "household",
+  "metric": "overview",
+  "member_id": null,
+  "year": 2026,
+  "month": 4,
+  "value": {
+    "total_savings": "12500.00",
+    "total_invested": "18200.00",
+    "portfolio_value": "19800.00",
+    "monthly_expenses": "3200.00",
+    "savings_rate": 0.42,
+    "by_member": [
+      { "member_id": "a1a1...", "savings": "5000.00", "invested": "4750.00" },
+      { "member_id": "b2b2...", "savings": "4500.00", "invested": "8200.00" },
+      { "member_id": "c3c3...", "savings": "3000.00", "invested": "5250.00" }
+    ]
+  }
+}
+```
+
+### Query Pattern
+
+The frontend always queries by month range:
+
+```
+GET /v1/dashboard/investments/portfolio?member_id=...&from=2025-01&to=2026-04
+```
+
+Returns an array of monthly snapshots. The frontend renders charts from this
+time series. Changing the interval (last 3 months, last year, all time) is
+just a different `from`/`to` range — always month granularity.
 
 ## Projections
 
-Examples of what hh-dashboard would materialise:
+| Projection | Service | Scope | Description |
+|---|---|---|---|
+| `portfolio_summary` | investments | per-member | Total invested, value, % change, by-type, by-entity |
+| `savings_progress` | goals | household | Per-goal progress, planned vs actual, savings rate |
+| `expense_breakdown` | expenses | per-member | Monthly spending by category, trends |
+| `overview` | household | household | Cross-service KPIs: net worth, cash flow, savings rate |
+| `member_summary` | household | per-member | Per-member view across all services |
 
-| Projection | Source | Use case |
-|---|---|---|
-| Portfolio summary | hh-investments events | Total invested, portfolio value, % change, by-type/by-entity breakdowns |
-| Savings progress | hh-goals events | Per-goal progress, planned vs actual, household savings rate |
-| Expense breakdown | hh-expenses events | Monthly spending by category, trends, budget vs actual |
-| Member overview | All services | Per-member net worth, savings, investments, expenses |
-| Household KPIs | All services | Total household net worth, monthly cash flow, savings rate |
+## Implementation Phases
 
-## Benefits
+### Phase 1 — Foundation
+- Set up NATS JetStream in hh-infra
+- Define event contract in hh-shared (subjects, envelope type)
+- Add NATS publishing to hh-investments (contribution + valuation events)
+- Build hh-dashboard with `portfolio_summary` projection
+- Single endpoint: `GET /v1/dashboard/investments/portfolio`
 
-- CRUD services stay simple and fast — no aggregation logic
-- Dashboard queries are cheap reads against pre-computed data
-- Cross-service views become possible without frontend stitching
-- Event-driven: dashboards update automatically when data changes
-- Can be rebuilt from scratch by replaying events
+### Phase 2 — Goals + Expenses
+- Add NATS publishing to hh-goals (movement, allocation, expense events)
+- Add NATS publishing to hh-expenses (transaction events)
+- Build `savings_progress` and `expense_breakdown` projections
+- Add corresponding dashboard endpoints
 
-## Open Questions
+### Phase 3 — Cross-Service Views
+- Build `overview` and `member_summary` projections (aggregate across services)
+- Household-wide KPIs endpoint
+- Per-member unified dashboard endpoint
 
-- NATS vs other brokers (Kafka, Redis Streams) — NATS is lightweight and fits the scale
-- Event schema versioning — how to handle schema evolution
-- Replay strategy — full rebuild vs incremental catch-up
-- Latency tolerance — how stale can dashboard data be? (seconds is likely fine)
-- Whether to start with polling (simpler) and migrate to events later
+## Future Improvements
+
+### Replay strategy
+Define how to rebuild projections from scratch — options include replaying
+retained NATS events, re-fetching from source APIs, or restoring from
+database snapshots. Not needed for initial implementation but should be
+designed before production use.
+
+### Event schema evolution
+As services evolve, event payloads will change. The `version` field on the
+envelope enables consumers to handle multiple versions. A formal schema
+registry or versioned payload types in hh-shared could be added later.
+
+### Real-time push to frontend
+Once projections are maintained, hh-dashboard could push updates to hh-web
+via WebSocket or SSE so dashboards refresh without polling.
