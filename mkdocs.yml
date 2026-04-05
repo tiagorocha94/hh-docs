@@ -24,6 +24,7 @@ nav:
   - Roadmap: roadmap.md
   - Developers:
     - Architecture: architecture.md
+    - Dashboard Architecture: dashboard-architecture.md
     - Conventions: conventions.md
     - New Service Checklist: new-service-checklist.md
     - Repositories:

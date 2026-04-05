@@ -32,3 +32,10 @@ For what this service does and how it works, see [Features > Authentication](../
 | Variable | Required | Default | Description |
 |---|---|---|---|
 | `KEY_PATH` | No | `keys` | Directory for ES256 key pair storage |
+
+### Schema
+
+| Table | Key columns |
+|-------|-------------|
+| `users` | id, email, password_hash, role, member_id |
+| `refresh_tokens` | id, user_id, token_hash, expires_at, revoked_at |

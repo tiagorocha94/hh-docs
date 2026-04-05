@@ -91,11 +91,6 @@ calculation.
 ### Joint instruments
 Allow multiple member_ids per instrument for shared investment accounts.
 
-### Dashboard / summary endpoint
-A pre-aggregated portfolio summary endpoint (total invested, portfolio value,
-breakdowns by type/entity/member, time series). Was removed during migration
-to keep the service CRUD-only; can be re-added when the frontend needs it.
-
 ## hh-expenses (planned service)
 
 ### Core implementation
@@ -125,6 +120,19 @@ tested automatically.
 `StartPostgresContainer` hardcodes `postgres:18-alpine`. Make the image
 configurable via parameter or environment variable for testing against
 different Postgres versions.
+
+## hh-dashboard (planned service)
+
+### Centralised read-optimised dashboards
+The existing hh-* services are CRUD-focused and optimised for writes. Dashboard
+queries (aggregations, time series, cross-member breakdowns) don't belong in
+those services — they would add read-heavy load to write-optimised schemas.
+
+hh-dashboard would be a dedicated read service that consumes data from all
+other services and serves pre-aggregated views: portfolio summaries, savings
+progress, expense breakdowns, per-member overviews, and household-wide KPIs.
+
+See [Dashboard Architecture](dashboard-architecture.md) for the detailed design.
 
 ## hh-infra
 
