@@ -21,7 +21,8 @@ consistent.
 Named saving envelopes. Each goal has a color, icon, budget, target date,
 and start date. Goals are household-wide (not per-member in v1).
 
-A goal moves through statuses: **active** → **completed** or **cancelled**.
+A goal moves through statuses: **planned** (start date in the future) →
+**active** (start date reached) → **completed** or **cancelled**.
 
 ### Deposits and auto-distribution
 When you record a deposit into an account, the system automatically

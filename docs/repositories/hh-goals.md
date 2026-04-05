@@ -23,7 +23,7 @@ Real bank or savings accounts. Balances are never stored; they are always derive
 Every real money event: a monthly transfer in (positive) or a withdrawal (negative). Deposits trigger the auto-distribution algorithm. Movements are immutable — delete to correct.
 
 ### Goals
-Named saving envelopes. Each goal has a color, icon, budget, and target date. Goals are household-wide (no member-level isolation in v1). Status transitions: `active` → `completed` or `cancelled`.
+Named saving envelopes. Each goal has a color, icon, budget, and target date. Goals are household-wide (no member-level isolation in v1). Status transitions: `planned` (start date in the future) → `active` (start date reached) → `completed` or `cancelled`.
 
 ### Versions
 Every time a goal's budget or target date changes, a new version is created and a new set of planned allocations is generated. Past months are frozen under the old version. This preserves history and makes it easy to see how a plan evolved over time.

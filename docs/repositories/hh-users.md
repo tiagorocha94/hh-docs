@@ -17,7 +17,6 @@ All `/v1` endpoints require a valid JWT bearer token issued by [hh-auth](hh-auth
 ### Member
 A person in the household. A member has:
 - A **name** — how they appear throughout the app
-- An **email** — optional, for future notification use
 - An **avatar** — a color and an icon chosen from a predefined palette, used to visually distinguish members across all parts of the UI
 
 ### Avatar
@@ -28,7 +27,6 @@ This same color + icon pattern is reused in other services (goals, expense categ
 ## Key Behaviours
 
 - Members can be created, edited, and deleted at any time.
-- Email is optional. When provided it must be a valid email address and must be unique across all members.
 - Deleting a member does **not** cascade to other services. Goals, expenses, and investments that reference that member's ID are unaffected — this is intentional. Cross-service cascade is a future concern.
 - There is no concept of permissions at this stage beyond the admin/member role distinction enforced by hh-auth.
 

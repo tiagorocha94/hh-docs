@@ -50,4 +50,3 @@ sequenceDiagram
 
 - No password reset yet (planned)
 - No OAuth / social login — email + password only
-- No server-side sessions — JWTs are stateless

@@ -7,7 +7,7 @@ a transaction is recorded by a member, an investment is tracked per member.
 ## What you can do
 
 - Add, edit, and remove household members
-- Each member gets a name, optional email, and a visual avatar (color + icon)
+- Each member gets a name and a visual avatar (color + icon)
 - Avatars use the [Lucide icon set](https://lucide.dev) and appear consistently across the entire app
 
 ## How avatars work
