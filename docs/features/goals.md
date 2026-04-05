@@ -29,6 +29,23 @@ distributes it across active goals. Goals closest to their deadline get
 funded first. If there's money left over after all goals are satisfied for
 the month, it stays as unallocated balance.
 
+```mermaid
+graph TD
+    D[Record deposit €800] --> C[Compute unallocated balance]
+    C --> S[Sort goals by deadline]
+    S --> G1[Goal 1: Holiday<br/>needs €267]
+    S --> G2[Goal 2: Car<br/>needs €400]
+    S --> G3[Goal 3: Emergency<br/>needs €200]
+    G1 --> A1[Allocate €267]
+    G2 --> A2[Allocate €400]
+    G3 --> A3[Allocate €133<br/>remaining]
+
+    style D fill:#6366f1,color:#fff
+    style A1 fill:#22c55e,color:#fff
+    style A2 fill:#22c55e,color:#fff
+    style A3 fill:#f59e0b,color:#fff
+```
+
 ### Allocations
 Each goal has a monthly plan (budget ÷ months). As deposits come in, actual
 allocations are created. The gap between planned and actual drives the

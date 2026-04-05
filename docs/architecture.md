@@ -4,7 +4,7 @@
 
 - Go 1.26, Chi router, pgx/v5, goose migrations
 - PostgreSQL 18 (one database per service)
-- React 18 + Vite + Tailwind (frontend)
+- React 18 + Vite + Tailwind (frontend — planned as hh-web)
 - Docker Compose for local dev, GHCR for images
 - GitHub Actions for CI/CD
 
@@ -17,11 +17,69 @@
 | hh-goals | Savings goals & envelope budgeting | ✅ Complete |
 | hh-investments | Investment portfolio tracking | ✅ Complete |
 | hh-expenses | Income & expense tracking | 📋 Planned |
+| hh-web | Frontend SPA (React + Vite) | 📋 Planned |
 | hh-shared | Go library (middleware, validation, helpers) | ✅ Complete |
 | hh-infra | Orchestration (docker-compose, nginx) | Active |
 | hh-docs | Platform documentation (this site) | Active |
 
+## Service Dependencies
+
+```mermaid
+graph TD
+    SHARED[hh-shared<br/>Go library]
+    AUTH[hh-auth]
+    USERS[hh-users]
+    GOALS[hh-goals]
+    INV[hh-investments]
+    EXP[hh-expenses]
+    WEB[hh-web]
+    INFRA[hh-infra]
+
+    AUTH -->|imports| SHARED
+    USERS -->|imports| SHARED
+    GOALS -->|imports| SHARED
+    INV -->|imports| SHARED
+    EXP -.->|imports| SHARED
+
+    USERS -->|JWKS| AUTH
+    GOALS -->|JWKS| AUTH
+    INV -->|JWKS| AUTH
+    EXP -.->|JWKS| AUTH
+
+    INFRA -->|orchestrates| AUTH
+    INFRA -->|orchestrates| USERS
+    INFRA -->|orchestrates| GOALS
+    INFRA -->|orchestrates| INV
+    INFRA -.->|orchestrates| EXP
+    INFRA -.->|orchestrates| WEB
+
+    style EXP fill:#a8a29e,color:#fff
+    style WEB fill:#a8a29e,color:#fff
+```
+
+Solid lines are current dependencies. Dotted lines are planned.
+
 ## Authentication Flow
+
+```mermaid
+sequenceDiagram
+    participant C as Client (hh-web)
+    participant N as nginx
+    participant A as hh-auth
+    participant S as Service
+
+    C->>N: POST /auth/v1/login
+    N->>A: Forward (strip /auth prefix)
+    A->>A: Validate credentials
+    A-->>C: JWT + refresh cookie
+
+    C->>N: GET /users/v1/members (Bearer token)
+    N->>N: Validate Authorization header exists
+    N->>S: Forward (strip /users prefix)
+    S->>S: Verify JWT via cached JWKS
+    S->>S: Extract identity from claims
+    S-->>C: 200 OK + data
+```
 
 1. Client authenticates via `POST /auth/v1/login` → receives JWT access token + refresh cookie
 2. Client sends `Authorization: Bearer <token>` on all subsequent requests
@@ -49,24 +107,6 @@
 }
 ```
 
-### Request Flow
-
-```mermaid
-sequenceDiagram
-    participant C as Client
-    participant N as nginx
-    participant JWT as JWTAuth Middleware
-    participant H as Handler
-
-    C->>N: GET /users/v1/members (Bearer token)
-    N->>N: Validate Authorization header exists
-    N->>JWT: Forward (strip /users prefix)
-    JWT->>JWT: Fetch JWKS from auth-svc (cached)
-    JWT->>JWT: Verify ES256 signature + expiration
-    JWT->>H: Set reqctx.Identity on context
-    H->>C: 200 OK
-```
-
 ### Authorization
 
 Each service verifies JWT locally and enforces its own rules:
@@ -85,15 +125,25 @@ Pattern: read access is household-wide (any authenticated user). Write access is
 
 ## Data Ownership
 
-Each service owns its database and schema. No cross-service database access. Services reference members by UUID (from hh-users seed identities defined in `hh-shared/seeds/identities.go`).
+Each service owns its database and schema. No cross-service database access.
 
-| Service | Database |
-|---------|----------|
-| hh-auth | `hh_auth` |
-| hh-users | `hh_users` |
-| hh-goals | `hh_goals` |
-| hh-investments | `hh_investments` |
-| hh-expenses | `hh_expenses` (planned) |
+```mermaid
+graph LR
+    AUTH[hh-auth] --> DB_AUTH[(hh_auth)]
+    USERS[hh-users] --> DB_USERS[(hh_users)]
+    GOALS[hh-goals] --> DB_GOALS[(hh_goals)]
+    INV[hh-investments] --> DB_INV[(hh_investments)]
+    EXP[hh-expenses] -.-> DB_EXP[(hh_expenses)]
+
+    style DB_AUTH fill:#f59e0b,color:#fff
+    style DB_USERS fill:#f59e0b,color:#fff
+    style DB_GOALS fill:#f59e0b,color:#fff
+    style DB_INV fill:#f59e0b,color:#fff
+    style DB_EXP fill:#a8a29e,color:#fff
+    style EXP fill:#a8a29e,color:#fff
+```
+
+Services reference members by UUID (from hh-users seed identities defined in `hh-shared/seeds/identities.go`). Referential integrity across services is enforced by convention, not by the database.
 
 ## API Design Patterns
 
@@ -149,9 +199,3 @@ All services use port 8080 internally. Port mapping to different external ports 
 ### PostgreSQL
 
 Single instance on `:5432`. Each service has its own database, created by `init.sql` on first boot.
-
-## Database Relationships
-
-Services have independent databases with no cross-database foreign key constraints. All services reference member IDs from hh-users as plain UUIDs — referential integrity across services is enforced by convention, not by the database.
-
-Current approach: frontend admin page validates consistency between hh-auth and hh-users when managing members.

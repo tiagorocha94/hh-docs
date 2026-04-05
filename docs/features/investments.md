@@ -12,6 +12,25 @@ on your portfolio and builds a personal history of investment decisions.
 
 ## Core concepts
 
+```mermaid
+graph TD
+    M[Member] --> E1[Entity: DEGIRO]
+    M --> E2[Entity: CGD]
+    E1 --> I1[Instrument: VWCE<br/>Type: ETF]
+    E1 --> I2[Instrument: CSPX<br/>Type: ETF]
+    E2 --> I3[Instrument: CA Série DT<br/>Type: Cert. Aforro]
+    I1 --> C1[Contributions]
+    I1 --> V1[Valuations]
+    I2 --> C2[Contributions]
+    I2 --> V2[Valuations]
+    I3 --> C3[Contributions]
+    I3 --> V3[Valuations]
+
+    style M fill:#6366f1,color:#fff
+    style E1 fill:#3b82f6,color:#fff
+    style E2 fill:#22c55e,color:#fff
+```
+
 ### Investment Types
 Categories like ETF, Stock, Bond, PPR, Certificados de Aforro. The service
 ships with sensible defaults, but members can add or remove types.

@@ -135,3 +135,22 @@ The orchestration repo is currently named `hh`. It should be renamed to
 ### Full-stack integration testing
 Compose all `-dev` images into a single docker-compose for automated
 end-to-end testing of the full platform.
+
+## hh-web (planned)
+
+### Extract frontend to own repo
+The React SPA currently lives inside the `hh` (infra) repo as `fe/`. It
+should be extracted to its own `hh-web` repository with independent CI/CD,
+matching the polyrepo pattern.
+
+### Authentication UI
+Login page, token refresh handling, logout flow. Currently partially
+implemented in the monorepo frontend.
+
+### Dashboard views
+Per-service dashboards (goals progress, investment portfolio summary,
+expense breakdown) that consume the CRUD APIs.
+
+### Responsive design
+Mobile-friendly layouts for on-the-go access to household finances.
+
