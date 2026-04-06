@@ -7,15 +7,13 @@ a transaction is recorded by a member, an investment is tracked per member.
 ## What you can do
 
 - Add, edit, and remove household members
-- Each member gets a name and a visual avatar (color + icon)
-- Avatars use the [Lucide icon set](https://lucide.dev) and appear consistently across the entire app
+- Each member has a name — avatars are generated automatically
 
 ## How avatars work
 
-Each member is represented by a colored circle with an icon inside. You pick
-a color (hex value) and an icon name. This same pattern is reused for goals,
-expense categories, and investment instruments — so the whole app feels
-visually consistent.
+Avatars are generated client-side using DiceBear with the member's name as
+seed. No avatar data is stored in the backend — the same name always
+produces the same avatar, and avatars are cached in the browser.
 
 ## Roles
 

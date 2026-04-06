@@ -103,9 +103,6 @@ Support Google, GitHub, or other OAuth providers alongside email + password.
 Invite a person to join the household by email. Depends on email sending
 infrastructure being resolved first.
 
-### 🟢 Profile photos
-Support uploaded avatars in addition to the icon-based system.
-
 ### 🟢 Per-member settings
 Timezone, currency preference, notification preferences. More relevant
 once a notification system exists.

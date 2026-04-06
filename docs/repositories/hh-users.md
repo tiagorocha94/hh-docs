@@ -26,4 +26,4 @@ For what this service does and how it works, see [Features > Members](../feature
 
 | Table | Key columns |
 |-------|-------------|
-| `members` | id, name, color, icon, avatar_url |
+| `members` | id, name |
