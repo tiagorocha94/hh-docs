@@ -101,16 +101,6 @@ Warn when a group's actual spend exceeds its target percentage.
 
 ## hh-shared
 
-### Multi-dependency readiness checks
-The `health.Readiness` handler currently accepts a single `Pinger`. Evolve
-to accept multiple dependencies (Postgres, Redis, external APIs) and report
-individual status per dependency.
-
-### Package documentation and examples
-Add `example_test.go` files to key packages (httputil, config, health,
-apperr, validate, server) so usage examples show up in `go doc` and are
-tested automatically.
-
 ### Configurable Postgres version in testutil
 `StartPostgresContainer` hardcodes `postgres:18-alpine`. Make the image
 configurable via parameter or environment variable for testing against
