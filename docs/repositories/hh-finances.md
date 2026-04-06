@@ -2,7 +2,7 @@
 
 Income and expense tracking with Excel import.
 
-Repository: github.com/tiagorocha94/hh-finances (planned)
+Repository: [github.com/tiagorocha94/hh-finances](https://github.com/tiagorocha94/hh-finances)
 
 For what this service does and how it works, see [Features > Finances](../features/finances.md).
 

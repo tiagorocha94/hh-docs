@@ -70,7 +70,7 @@ Timezone, currency preference, notification preferences.
 
 ### Cross-service cascade on deletion
 Propagate member deletion to dependent services (goals, investments,
-expenses) — currently, deleting a member leaves orphaned references.
+finances) — currently, deleting a member leaves orphaned references.
 
 ## hh-goals
 
@@ -79,8 +79,8 @@ Goals are currently household-wide. A `goal_members` join table would allow
 assigning goals to specific members.
 
 ### Expense automation
-When the expenses service is implemented, an expense category flagged as
-"savings" could automatically create a movement in hh-goals.
+In finances service, an expense category flagged as "goals" could 
+automatically create a movement in hh-goals.
 
 ## hh-investments
 
@@ -91,13 +91,7 @@ calculation.
 ### Joint instruments
 Allow multiple member_ids per instrument for shared investment accounts.
 
-## hh-finances (planned service)
-
-### Core implementation
-Build the finances service: category groups, categories, accounts,
-transactions, file imports, and budgets. See the
-[service spec](https://github.com/tiagorocha94/household/.kiro/specs/hh-finances.md)
-for the full design.
+## hh-finances
 
 ### Recurring transaction detection
 Flag income/expenses that repeat monthly and aggregate separately.

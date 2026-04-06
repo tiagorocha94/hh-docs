@@ -187,7 +187,7 @@ queries filter by `year + month` range — the smallest granularity is one month
 ```sql
 CREATE TABLE dashboard_snapshots (
     id        UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-    service   TEXT        NOT NULL,  -- 'goals', 'investments', 'expenses'
+    service   TEXT        NOT NULL,  -- 'goals', 'investments', 'finances'
     metric    TEXT        NOT NULL,  -- 'portfolio_summary', 'savings_progress', ...
     member_id UUID,                  -- NULL for household-wide metrics
     year      INT         NOT NULL,
@@ -276,7 +276,7 @@ just a different `from`/`to` range — always month granularity.
 |---|---|---|---|
 | `portfolio_summary` | investments | per-member | Total invested, value, % change, by-type, by-entity |
 | `savings_progress` | goals | household | Per-goal progress, planned vs actual, savings rate |
-| `expense_breakdown` | expenses | per-member | Monthly spending by category, trends |
+| `expense_breakdown` | finances | per-member | Monthly spending by category, trends |
 | `overview` | household | household | Cross-service KPIs: net worth, cash flow, savings rate |
 | `member_summary` | household | per-member | Per-member view across all services |
 

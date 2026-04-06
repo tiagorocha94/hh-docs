@@ -16,7 +16,7 @@
 | hh-users | Household member management | ✅ Complete |
 | hh-goals | Savings goals & envelope budgeting | ✅ Complete |
 | hh-investments | Investment portfolio tracking | ✅ Complete |
-| hh-finances | Income & expense tracking | 📋 Planned |
+| hh-finances | Income & expense tracking | ✅ Complete |
 | hh-web | Frontend SPA (React + Vite) | 📋 Planned |
 | hh-shared | Go library (middleware, validation, helpers) | ✅ Complete |
 | hh-infra | Orchestration (docker-compose, nginx) | Active |
@@ -34,12 +34,12 @@ graph TD
         N --> USERS[hh-users]
         N --> GOALS[hh-goals]
         N --> INV[hh-investments]
-        N -.-> EXP[hh-finances]
+        N --> FIN[hh-finances]
         AUTH --> PG
         USERS --> PG
         GOALS --> PG
         INV --> PG
-        EXP -.-> PG
+        FIN --> PG
     end
 
     SHARED[hh-shared<br/>Go library]
@@ -47,14 +47,13 @@ graph TD
     USERS -->|imports| SHARED
     GOALS -->|imports| SHARED
     INV -->|imports| SHARED
-    EXP -.->|imports| SHARED
+    FIN -->|imports| SHARED
 
     USERS -.->|JWKS| AUTH
     GOALS -.->|JWKS| AUTH
     INV -.->|JWKS| AUTH
-    EXP -.->|JWKS| AUTH
+    FIN -.->|JWKS| AUTH
 
-    style EXP fill:#a8a29e,color:#fff
     style WEB fill:#a8a29e,color:#fff
     style SHARED fill:#8b5cf6,color:#fff
 ```
@@ -117,6 +116,7 @@ Each service verifies JWT locally and enforces its own rules:
 - **hh-users:** Members can view all household members; can edit only their own profile. Admins can manage all.
 - **hh-goals:** Goals are household-wide (no member-level isolation in v1). All authenticated users can manage goals.
 - **hh-investments:** Members can view all household investments; can create/edit/delete only their own. Admins can manage all.
+- **hh-finances:** Members can view all household categories and groups; can manage their own accounts, imports, and budgets. Admins can manage all.
 
 Pattern: read access is household-wide (any authenticated user). Write access is restricted by ownership or admin role.
 
@@ -135,14 +135,13 @@ graph LR
     USERS[hh-users] --> DB_USERS[(hh_users)]
     GOALS[hh-goals] --> DB_GOALS[(hh_goals)]
     INV[hh-investments] --> DB_INV[(hh_investments)]
-    EXP[hh-finances] -.-> DB_EXP[(hh_finances)]
+    FIN[hh-finances] --> DB_FIN[(hh_finances)]
 
     style DB_AUTH fill:#f59e0b,color:#fff
     style DB_USERS fill:#f59e0b,color:#fff
     style DB_GOALS fill:#f59e0b,color:#fff
     style DB_INV fill:#f59e0b,color:#fff
-    style DB_EXP fill:#a8a29e,color:#fff
-    style EXP fill:#a8a29e,color:#fff
+    style DB_FIN fill:#f59e0b,color:#fff
 ```
 
 Services reference members by UUID (from hh-users seed identities defined in `hh-shared/seeds/identities.go`). Referential integrity across services is enforced by convention, not by the database.
