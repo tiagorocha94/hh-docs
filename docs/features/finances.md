@@ -1,20 +1,20 @@
 # Finances
 
-Household tracks income and expenses for each member. The primary input
-method is importing bank statements as Excel files — the app parses
-transactions automatically and organises them by category and budget group.
+Household tracks income and expenses for each member. The primary input 
+method is importing statements as Excel files — the app parses transactions 
+automatically and organises them by category and budget group.
 
 ## Why import-based?
 
-Rather than manually typing every transaction, members export their bank
-statement each month and upload it. The app reads the file, stores all
-transactions, and links them to categories. This keeps the data accurate
-(it matches the bank) and the effort low (one upload per month per member).
+Rather than manually typing every transaction, members export their statement 
+each month and upload it. The app reads the file, stores all transactions, 
+and links them to categories. This keeps the data accurate and the effort 
+low (one upload per month per member).
 
 ## Core concepts
 
 ### Categories
-Fine-grained labels for transactions — "Groceries", "Salary", "Netflix".
+Fine-grained labels for transactions — "Groceries", "Salary", "Streaming".
 Each category has a type (`expense` or `income`), a color, and an icon.
 Categories are household-wide (shared by all members).
 
@@ -29,7 +29,7 @@ graph TD
     G1 --> C2[Groceries]
     G1 --> C3[Utilities]
     G2[Leisure 20%] --> C4[Restaurants]
-    G2 --> C5[Netflix]
+    G2 --> C5[Streaming]
     G3[Investment 30%] --> C6[Savings Transfer]
     G3 --> C7[ETF Purchase]
 
@@ -64,8 +64,8 @@ versions are never mutated.
 ## Example flow
 
 1. Admin creates category groups: "Essential" (50%), "Leisure" (20%), "Savings" (30%)
-2. Categories are created: "Rent" → Essential, "Groceries" → Essential, "Netflix" → Leisure, etc.
+2. Categories are created: "Rent" → Essential, "Groceries" → Essential, "Streaming" → Leisure, etc.
 3. Alice sets her budget: income €3,000/month → Essential gets €1,500, Leisure €600, Savings €900
 4. At month end, Alice exports her bank statement and uploads the Excel file
-5. The app parses 87 transactions, links them to categories and her account
+5. The app parses the transactions, links them to categories and her account
 6. Alice can now see her transactions organised by category and group
