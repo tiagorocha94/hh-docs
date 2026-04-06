@@ -4,7 +4,7 @@ Design notes for the planned hh-dashboard service.
 
 ## Problem
 
-The existing services (hh-goals, hh-investments, hh-expenses) are CRUD-focused.
+The existing services (hh-goals, hh-investments, hh-finances) are CRUD-focused.
 Their schemas are optimised for transactional writes — normalised tables, per-entity
 queries, single-service scope. Dashboard queries require the opposite: aggregations
 across entities, time-series rollups, cross-service joins, and per-member breakdowns.
@@ -29,7 +29,7 @@ graph TB
     subgraph CRUD Services
         GOALS[hh-goals]
         INV[hh-investments]
-        EXP[hh-expenses]
+        EXP[hh-finances]
     end
 
     GOALS -->|publish| NATS[NATS JetStream]
@@ -71,8 +71,8 @@ Subjects follow a three-part convention: `<service>.<domain>.<action>`.
 | `investments.instrument.updated` | Instrument updated (including status change) |
 | `investments.contribution.created` | Contribution recorded |
 | `investments.valuation.upserted` | Valuation created or updated |
-| `expenses.transaction.created` | Transaction recorded |
-| `expenses.transaction.deleted` | Transaction deleted |
+| `finances.transaction.created` | Transaction recorded |
+| `finances.transaction.deleted` | Transaction deleted |
 
 Subject constants and the envelope type are defined in `hh-shared` so all
 services import them — no string duplication, compile-time safety.
@@ -291,7 +291,7 @@ just a different `from`/`to` range — always month granularity.
 
 ### Phase 2 — Goals + Expenses
 - Add NATS publishing to hh-goals (movement, allocation, expense events)
-- Add NATS publishing to hh-expenses (transaction events)
+- Add NATS publishing to hh-finances (transaction events)
 - Build `savings_progress` and `expense_breakdown` projections
 - Add corresponding dashboard endpoints
 

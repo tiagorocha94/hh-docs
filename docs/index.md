@@ -13,7 +13,7 @@ Household gives a family a single place to manage money together:
 - **Savings goals** — envelope budgeting where every saved euro gets a job
 - **Auto-distribution** — deposits are automatically split across active goals by urgency
 - **Investments** — track investment instruments, contributions, and valuations
-- **Expenses** — record spending against goals to see real progress *(service planned)*
+- **Expenses** — import bank statements and track spending by category *(service planned)*
 
 ## How to navigate this site
 

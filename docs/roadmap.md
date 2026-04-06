@@ -91,18 +91,19 @@ calculation.
 ### Joint instruments
 Allow multiple member_ids per instrument for shared investment accounts.
 
-## hh-expenses (planned service)
+## hh-finances (planned service)
 
 ### Core implementation
-Build the expenses service: categories, groups, transactions, summaries.
-This is the next service to be extracted from the monorepo stub.
+Build the finances service: category groups, categories, accounts,
+transactions, file imports, and budgets. See the
+[service spec](https://github.com/tiagorocha94/household/.kiro/specs/hh-finances.md)
+for the full design.
 
-### Recurring transactions
-Support for recurring income/expenses (monthly salary, subscriptions) that
-auto-generate transaction records.
+### Recurring transaction detection
+Flag income/expenses that repeat monthly and aggregate separately.
 
-### Budget tracking
-Set monthly budgets per category and track spending against them.
+### Budget alerts
+Warn when a group's actual spend exceeds its target percentage.
 
 ## hh-shared
 

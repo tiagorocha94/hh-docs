@@ -16,7 +16,7 @@
 | hh-users | Household member management | ✅ Complete |
 | hh-goals | Savings goals & envelope budgeting | ✅ Complete |
 | hh-investments | Investment portfolio tracking | ✅ Complete |
-| hh-expenses | Income & expense tracking | 📋 Planned |
+| hh-finances | Income & expense tracking | 📋 Planned |
 | hh-web | Frontend SPA (React + Vite) | 📋 Planned |
 | hh-shared | Go library (middleware, validation, helpers) | ✅ Complete |
 | hh-infra | Orchestration (docker-compose, nginx) | Active |
@@ -34,7 +34,7 @@ graph TD
         N --> USERS[hh-users]
         N --> GOALS[hh-goals]
         N --> INV[hh-investments]
-        N -.-> EXP[hh-expenses]
+        N -.-> EXP[hh-finances]
         AUTH --> PG
         USERS --> PG
         GOALS --> PG
@@ -135,7 +135,7 @@ graph LR
     USERS[hh-users] --> DB_USERS[(hh_users)]
     GOALS[hh-goals] --> DB_GOALS[(hh_goals)]
     INV[hh-investments] --> DB_INV[(hh_investments)]
-    EXP[hh-expenses] -.-> DB_EXP[(hh_expenses)]
+    EXP[hh-finances] -.-> DB_EXP[(hh_finances)]
 
     style DB_AUTH fill:#f59e0b,color:#fff
     style DB_USERS fill:#f59e0b,color:#fff

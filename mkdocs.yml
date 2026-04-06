@@ -21,6 +21,7 @@ nav:
     - Members: features/members.md
     - Savings Goals: features/goals.md
     - Investments: features/investments.md
+    - Finances: features/finances.md
   - Roadmap: roadmap.md
   - Developers:
     - Architecture: architecture.md
@@ -33,6 +34,7 @@ nav:
       - hh-users: repositories/hh-users.md
       - hh-goals: repositories/hh-goals.md
       - hh-investments: repositories/hh-investments.md
+      - hh-finances: repositories/hh-finances.md
 
 markdown_extensions:
   - tables
