@@ -9,7 +9,9 @@ For what this service does and how it works, see [Features > Savings Goals](../f
 ## Technical Details
 
 - Database: `hh_goals`
-- Goals are household-wide (no member_id scoping in v1)
+- Accounts can be household-wide (member_id = NULL) or personal (member_id set)
+- Every goal belongs to exactly one account (account_id NOT NULL)
+- Auto-distribution scopes to the account: deposits only distribute to goals on that account
 - Account balances are always derived from movements, never stored
 - Goal versioning: budget/target_date changes create a new version with regenerated planned allocations
 
@@ -43,9 +45,9 @@ For what this service does and how it works, see [Features > Savings Goals](../f
 
 | Table | Key columns |
 |-------|-------------|
-| `accounts` | id, name, description |
+| `accounts` | id, name, description, member_id (NULL = household) |
 | `account_movements` | id, account_id, amount, date |
-| `goals` | id, name, color, icon, status, start_date |
+| `goals` | id, name, color, icon, status, start_date, account_id |
 | `goal_versions` | id, goal_id, version_number, budget, target_date |
 | `goal_planned_allocations` | id, goal_version_id, year, month, amount |
 | `goal_allocations` | id, goal_id, year, month, amount |
