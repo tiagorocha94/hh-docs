@@ -9,7 +9,7 @@ email + password login with JWT-based sessions.
 sequenceDiagram
     participant U as User
     participant FE as Browser
-    participant A as hh-auth
+    participant A as hh-identity
 
     U->>FE: Enter email + password
     FE->>A: POST /v1/login

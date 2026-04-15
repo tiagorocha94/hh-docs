@@ -91,7 +91,7 @@ Hooks live in `.githooks/` and are configured via `git config core.hooksPath`.
 
 - All `/v1` routes use `middleware.JWTAuth(ctx, jwksURL)` from hh-shared
 - `JWKS_URL` env var is required — service fails to start if empty (checked manually in `main.go`)
-- hh-auth (the JWT issuer) does not require `JWKS_URL`
+- hh-identity (the JWT issuer) does not require `JWKS_URL`
 - `reqctx.Identity` carries UserID, MemberID, Role through context
 - `middleware.AdminOnly` for admin-restricted endpoints
 - `reqctx.CanWrite(ctx, resourceMemberID)` for member-scoped writes
@@ -173,7 +173,7 @@ Triggers on `v*` tags. Two jobs in sequence:
 - Builds dev image from `dev/Dockerfile` (production image + seeds)
 - Pushes `ghcr.io/tiagorocha94/hh-<name>:<tag>-dev` and `:latest-dev`
 
-> **Note:** `cd.yml` only applies to service repos (hh-auth, hh-users, hh-goals, etc.). hh-shared is a library and does not produce Docker images — it only has `ci.yml`.
+> **Note:** `cd.yml` only applies to service repos (hh-identity, hh-goals, etc.). hh-shared is a library and does not produce Docker images — it only has `ci.yml`.
 
 ### Secrets
 
@@ -200,7 +200,7 @@ if err != nil {
     return fmt.Errorf("load config: %w", err)
 }
 
-// Services that need JWKS (hh-users, hh-goals, etc.):
+// Services that need JWKS (hh-goals, hh-investments, etc.):
 if cfg.JWKSURL == "" {
     return fmt.Errorf("JWKS_URL is required")
 }
@@ -216,11 +216,11 @@ if cfg.JWKSURL == "" {
 | `LOG_LEVEL` | No | `info` | Minimum log level (`debug`, `info`, `warn`, `error`) |
 | `JWKS_URL` | Yes* | — | JWKS endpoint URL for JWT validation |
 
-*`JWKS_URL` is required by all services except hh-auth (which is the JWT issuer). Checked manually in `main.go`.
+*`JWKS_URL` is required by all services except hh-identity (which is the JWT issuer). Checked manually in `main.go`.
 
 ### Service-Specific Variables
 
-#### hh-auth
+#### hh-identity
 
 | Variable | Required | Default | Description |
 |---|---|---|---|
@@ -254,11 +254,11 @@ directory is absent and the runner skips silently.
 ### Dev Images
 
 Every service publishes a `-dev` Docker image that includes seed data.
-When a service depends on another (e.g. hh-goals depends on hh-auth),
+When a service depends on another (e.g. hh-goals depends on hh-identity),
 the compose file references the dependency's `-dev` image. This means:
 
-- Auth credentials (admin, Alice, Bob, Carla) are defined once in hh-auth
-  and consumed everywhere via `hh-auth:latest-dev`.
+- Auth credentials (admin, Alice, Bob, Carla) are defined once in hh-identity
+  and consumed everywhere via `hh-identity:latest-dev`.
 - A full-stack mocked environment can be composed by referencing all
   `-dev` images — no building from source required.
 - Integration test suites can spin up real service containers with
@@ -275,14 +275,14 @@ Defined in `hh-shared/seeds/identities.go` and mirrored in `hh/fe/src/lib/seeds.
 | `MemberBobID` | `b2b2b2b2-0000-0000-0000-000000000002` | Bob | member |
 | `MemberCarlaID` | `c3c3c3c3-0000-0000-0000-000000000003` | Carla | member |
 
-hh-auth also seeds an admin user (not member-linked):
+hh-identity also seeds an admin user (not member-linked):
 - Email: `admin@household.dev`, Role: `admin`
 
 ### Adding a New Member
 
 1. Add UUID constant to `hh-shared/seeds/identities.go`
-2. Add user row to `hh-auth/dev/seeds/001_users.sql` (with bcrypt hash)
-3. Add member row to `hh-users/dev/seeds/001_members.sql`
+2. Add user row to `hh-identity/dev/seeds/002_users.sql` (with bcrypt hash)
+3. Add member row to `hh-identity/dev/seeds/001_members.sql`
 4. Update `hh/fe/src/lib/seeds.ts` (frontend mirror)
 5. Add seed data to any service that references members (investments entities, etc.)
 6. Bump hh-shared version and update downstream services

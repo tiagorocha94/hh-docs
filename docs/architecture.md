@@ -79,7 +79,7 @@ sequenceDiagram
 1. Client authenticates via `POST /auth/v1/login` → receives JWT access token + refresh cookie
 2. Client sends `Authorization: Bearer <token>` on all subsequent requests
 3. nginx validates the header exists (returns 401 if missing), forwards to service
-4. Each service validates the JWT against hh-auth's JWKS endpoint (`/v1/jwks`)
+4. Each service validates the JWT against hh-identity's JWKS endpoint (`/v1/jwks`)
 5. `middleware.JWTAuth` (from hh-shared) handles validation, key caching, and identity extraction
 6. `reqctx.Identity` propagates user/member/role through the request context
 
@@ -87,7 +87,7 @@ sequenceDiagram
 
 - Access token: short-lived JWT (1 hour), signed with ES256 (asymmetric)
 - Refresh token: long-lived (7 days), stored in httpOnly cookie, rotated on every refresh
-- Key management: only hh-auth holds the private signing key; services verify using the public key from JWKS
+- Key management: only hh-identity holds the private signing key; services verify using the public key from JWKS
 
 ### JWT Claims
 
@@ -135,7 +135,7 @@ graph LR
     style DB_FIN fill:#f59e0b,color:#fff
 ```
 
-Services reference members by UUID (from hh-users seed identities defined in `hh-shared/seeds/identities.go`). Referential integrity across services is enforced by convention, not by the database.
+Services reference members by UUID (from hh-identity seed data defined in `hh-shared/seeds/identities.go`). Referential integrity across services is enforced by convention, not by the database.
 
 ## API Design Patterns
 

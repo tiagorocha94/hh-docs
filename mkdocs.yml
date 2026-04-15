@@ -30,8 +30,7 @@ nav:
     - New Service Checklist: new-service-checklist.md
     - Repositories:
       - hh-shared: repositories/hh-shared.md
-      - hh-auth: repositories/hh-auth.md
-      - hh-users: repositories/hh-users.md
+      - hh-identity: repositories/hh-identity.md
       - hh-goals: repositories/hh-goals.md
       - hh-investments: repositories/hh-investments.md
       - hh-finances: repositories/hh-finances.md

@@ -22,5 +22,5 @@ There are two roles:
 - **Admin** — can create, edit, and delete members. Can manage all resources.
 - **Member** — can view all data and edit their own profile.
 
-Roles are assigned at the authentication level (hh-auth) and enforced by
+Roles are assigned at the authentication level (hh-identity) and enforced by
 each service independently.
