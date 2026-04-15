@@ -12,14 +12,13 @@
 
 | Repo | Purpose | Status |
 |------|---------|--------|
-| hh-auth | Authentication (JWT, JWKS, user accounts) | ✅ Complete |
-| hh-users | Household member management | ✅ Complete |
+| hh-identity | Authentication, members, preferences | ✅ v0.1.0 |
 | hh-goals | Savings goals & envelope budgeting | ✅ Complete |
 | hh-investments | Investment portfolio tracking | ✅ Complete |
 | hh-finances | Income & expense tracking | ✅ Complete |
-| hh-web | Frontend SPA (React + Vite) | 📋 Planned |
+| hh-web | Frontend SPA (React + Vite) | ✅ v0.3.0 |
 | hh-shared | Go library (middleware, validation, helpers) | ✅ Complete |
-| hh-infra | Orchestration (docker-compose, nginx) | Active |
+| hh-infra | Orchestration (docker-compose, nginx) | 📋 Planned |
 | hh-docs | Platform documentation (this site) | Active |
 
 ## Service Dependencies
@@ -30,31 +29,26 @@ graph TD
         N[nginx]
         PG[(PostgreSQL)]
         WEB[hh-web] -->|HTTP| N
-        N --> AUTH[hh-auth]
-        N --> USERS[hh-users]
+        N --> IDENTITY[hh-identity]
         N --> GOALS[hh-goals]
         N --> INV[hh-investments]
         N --> FIN[hh-finances]
-        AUTH --> PG
-        USERS --> PG
+        IDENTITY --> PG
         GOALS --> PG
         INV --> PG
         FIN --> PG
     end
 
     SHARED[hh-shared<br/>Go library]
-    AUTH -->|imports| SHARED
-    USERS -->|imports| SHARED
+    IDENTITY -->|imports| SHARED
     GOALS -->|imports| SHARED
     INV -->|imports| SHARED
     FIN -->|imports| SHARED
 
-    USERS -.->|JWKS| AUTH
-    GOALS -.->|JWKS| AUTH
-    INV -.->|JWKS| AUTH
-    FIN -.->|JWKS| AUTH
+    GOALS -.->|JWKS| IDENTITY
+    INV -.->|JWKS| IDENTITY
+    FIN -.->|JWKS| IDENTITY
 
-    style WEB fill:#a8a29e,color:#fff
     style SHARED fill:#8b5cf6,color:#fff
 ```
 
@@ -66,7 +60,7 @@ Solid lines are current dependencies. Dotted lines are planned or runtime-only (
 sequenceDiagram
     participant C as Client (hh-web)
     participant N as nginx
-    participant A as hh-auth
+    participant A as hh-identity
     participant S as Service
 
     C->>N: POST /auth/v1/login
@@ -112,9 +106,8 @@ sequenceDiagram
 
 Each service verifies JWT locally and enforces its own rules:
 
-- **hh-auth:** User management is admin-only. Login is unauthenticated. Refresh/logout require any valid token.
-- **hh-users:** Members can view all household members; can edit only their own profile. Admins can manage all.
-- **hh-goals:** Goals are household-wide (no member-level isolation in v1). All authenticated users can manage goals.
+- **hh-identity:** User management is admin-only. Login is unauthenticated. Refresh/logout require any valid token. Members can view all; can edit only their own profile. Admins can manage all.
+- **hh-goals:** Goals belong to accounts. Accounts can be household-wide or personal. All authenticated users can manage goals on household accounts.
 - **hh-investments:** Members can view all household investments; can create/edit/delete only their own. Admins can manage all.
 - **hh-finances:** Members can view all household categories and groups; can manage their own accounts, imports, and budgets. Admins can manage all.
 
@@ -131,14 +124,12 @@ Each service owns its database and schema. No cross-service database access.
 
 ```mermaid
 graph LR
-    AUTH[hh-auth] --> DB_AUTH[(hh_auth)]
-    USERS[hh-users] --> DB_USERS[(hh_users)]
+    IDENTITY[hh-identity] --> DB_IDENTITY[(hh_identity)]
     GOALS[hh-goals] --> DB_GOALS[(hh_goals)]
     INV[hh-investments] --> DB_INV[(hh_investments)]
     FIN[hh-finances] --> DB_FIN[(hh_finances)]
 
-    style DB_AUTH fill:#f59e0b,color:#fff
-    style DB_USERS fill:#f59e0b,color:#fff
+    style DB_IDENTITY fill:#f59e0b,color:#fff
     style DB_GOALS fill:#f59e0b,color:#fff
     style DB_INV fill:#f59e0b,color:#fff
     style DB_FIN fill:#f59e0b,color:#fff
@@ -189,7 +180,7 @@ Services return typed error codes mapped to HTTP status:
 
 Single entry point on `:80`. Strips service path prefix before forwarding:
 
-- Browser: `GET /users/v1/members` → nginx: `GET /v1/members` → `users-svc:8080`
+- Browser: `GET /identity/v1/members` → nginx: `GET /v1/members` → `identity-svc:8080`
 
 Validates `Authorization` header exists (returns 401 if missing). Blocks internal `/_system/` endpoints.
 
