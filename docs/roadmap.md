@@ -11,10 +11,6 @@ All services currently assume EUR. Adding a `currency` column to monetary
 tables would enable multi-currency tracking with EUR as the aggregation
 currency.
 
-### 🟡 Pagination UI
-Backend pagination is implemented (via hh-shared/httputil) but the frontend
-fetches all records. Add pagination controls when data volume grows.
-
 ### 🟢 Immediate token revocation
 If admin force-logout becomes a requirement, add a Redis revocation list.
 hh-identity writes revoked token hashes on logout; JWT middleware checks
@@ -35,11 +31,6 @@ foundation for multi-tenancy once implemented.
 Every service duplicates ~90 lines of identical startup logic. A
 `hh-shared/bootstrap` package could reduce each `main.go` to ~30 lines.
 Waiting for services to mature further before extracting.
-
-### 🟡 Config validation
-A generic `config.LoadAndValidate[T]()` function that handles both loading
-from env vars and struct validation in one call, replacing the manual
-`JWKS_URL` check in main.go.
 
 ### 🟡 Email sending infrastructure
 Several features depend on the ability to send emails (password reset,
