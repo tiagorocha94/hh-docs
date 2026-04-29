@@ -61,22 +61,22 @@ sequenceDiagram
     participant C as Client (hh-web)
     participant N as nginx
     participant A as hh-identity
-    participant S as Service
+    participant S as hh-goals
 
-    C->>N: POST /auth/v1/login
-    N->>A: Forward (strip /auth prefix)
+    C->>N: POST /identity/v1/login
+    N->>A: Forward (strip /identity prefix)
     A->>A: Validate credentials
     A-->>C: JWT + refresh cookie
 
-    C->>N: GET /users/v1/members (Bearer token)
+    C->>N: GET /goals/v1/goals (Bearer token)
     N->>N: Validate Authorization header exists
-    N->>S: Forward (strip /users prefix)
+    N->>S: Forward (strip /goals prefix)
     S->>S: Verify JWT via cached JWKS
     S->>S: Extract identity from claims
     S-->>C: 200 OK + data
 ```
 
-1. Client authenticates via `POST /auth/v1/login` → receives JWT access token + refresh cookie
+1. Client authenticates via `POST /identity/v1/login` → receives JWT access token + refresh cookie
 2. Client sends `Authorization: Bearer <token>` on all subsequent requests
 3. nginx validates the header exists (returns 401 if missing), forwards to service
 4. Each service validates the JWT against hh-identity's JWKS endpoint (`/v1/jwks`)
@@ -180,7 +180,7 @@ Services return typed error codes mapped to HTTP status:
 
 Single entry point on `:80`. Strips service path prefix before forwarding:
 
-- Browser: `GET /identity/v1/members` → nginx: `GET /v1/members` → `identity-svc:8080`
+- Browser: `GET /goals/v1/goals` → nginx: `GET /v1/goals` → `goals-svc:8080`
 
 Validates `Authorization` header exists (returns 401 if missing). Blocks internal `/_system/` endpoints.
 

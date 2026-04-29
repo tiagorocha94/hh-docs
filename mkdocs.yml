@@ -34,6 +34,7 @@ nav:
       - hh-goals: repositories/hh-goals.md
       - hh-investments: repositories/hh-investments.md
       - hh-finances: repositories/hh-finances.md
+      - hh-web: repositories/hh-web.md
 
 markdown_extensions:
   - tables
