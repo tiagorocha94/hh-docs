@@ -192,21 +192,32 @@ Triggers on `v*` tags. Two jobs in sequence:
 
 ## Environment Variables
 
-All services use `config.Load()` from hh-shared:
+All services use `config.LoadAndValidate[T](v)` from hh-shared:
 
 ```go
-cfg, err := config.Load()
+v := validate.New()
+cfg, err := config.LoadAndValidate[config.Config](v)
 if err != nil {
     return fmt.Errorf("load config: %w", err)
 }
+```
 
-// Services that need JWKS (hh-goals, hh-investments, etc.):
-if cfg.JWKSURL == "" {
-    return fmt.Errorf("JWKS_URL is required")
+Services that require `JWKS_URL` define a custom config struct with validation tags:
+
+```go
+type goalsConfig struct {
+    config.Config
+    JWKSURL string `env:"JWKS_URL" validate:"required,url"`
+}
+
+v := validate.New()
+cfg, err := config.LoadAndValidate[goalsConfig](v)
+if err != nil {
+    return fmt.Errorf("load config: %w", err)
 }
 ```
 
-`config.Load()` reads these common variables:
+`config.LoadAndValidate` reads these common variables:
 
 | Variable | Required | Default | Description |
 |---|---|---|---|
@@ -216,7 +227,7 @@ if cfg.JWKSURL == "" {
 | `LOG_LEVEL` | No | `info` | Minimum log level (`debug`, `info`, `warn`, `error`) |
 | `JWKS_URL` | Yes* | — | JWKS endpoint URL for JWT validation |
 
-*`JWKS_URL` is required by all services except hh-identity (which is the JWT issuer). Checked manually in `main.go`.
+*`JWKS_URL` is required by all services except hh-identity (which is the JWT issuer). Enforced via `validate:"required,url"` on the service-specific config struct.
 
 ### Service-Specific Variables
 
