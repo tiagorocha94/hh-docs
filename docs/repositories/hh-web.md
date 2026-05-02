@@ -76,3 +76,6 @@ SPA fallback configured (`try_files $uri /index.html`).
 | v0.1.0 | Scaffold, auth, members, MSW, Docker, CI/CD |
 | v0.2.0 | Goals module, investments module |
 | v0.3.0 | Finances module |
+| v0.3.1 | API path refactor (hh-identity consolidation) |
+| v0.4.0 | Inline login creation in member form |
+| v0.4.1 | Goal status change UI (complete/cancel with surplus handling) |

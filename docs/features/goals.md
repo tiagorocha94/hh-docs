@@ -34,8 +34,9 @@ a color, icon, budget, target date, and start date.
 A goal moves through statuses: **planned** (start date in the future) →
 **active** (start date reached) → **completed** or **cancelled**.
 
-When a goal is completed with a positive balance, the surplus stays in the
-same account — available for other goals on that account.
+When a goal is completed with a positive balance, the surplus can optionally
+be returned to an account as a movement. If no account is selected, the
+surplus stays as unallocated balance on the goal's account.
 
 ### Deposits and auto-distribution
 
