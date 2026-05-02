@@ -30,7 +30,7 @@ For what this service does and how it works, see [Features > Authentication](../
 | PUT | `/v1/users/{id}` | Admin | Update user |
 | DELETE | `/v1/users/{id}` | Admin | Delete user |
 | GET | `/v1/members` | Bearer | List members (paginated) |
-| POST | `/v1/members` | Admin | Create member |
+| POST | `/v1/members` | Admin | Create member (optionally with login) |
 | GET | `/v1/members/{id}` | Bearer | Get member |
 | PUT | `/v1/members/{id}` | Owner/Admin | Update member |
 | DELETE | `/v1/members/{id}` | Admin | Delete member |

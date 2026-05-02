@@ -7,7 +7,24 @@ a transaction is recorded by a member, an investment is tracked per member.
 ## What you can do
 
 - Add, edit, and remove household members
+- Optionally create a login (user account) at the same time as the member
 - Each member has a name — avatars are generated automatically
+
+## Creating members with login
+
+When an admin creates a member, they can optionally provide an email and
+password in the same request. This creates both the member and a linked user
+account (with role `member`) in a single transaction — no need to create the
+user separately.
+
+- If only `name` is provided, a member is created without a login
+- If `name`, `email`, and `password` are all provided, both a member and a
+  linked user account are created atomically
+- `email` and `password` must both be present or both absent — providing one
+  without the other is an error
+
+This means new household members can log in immediately after being added,
+without the admin needing to manually create a user account.
 
 ## How avatars work
 

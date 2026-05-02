@@ -46,6 +46,20 @@ sequenceDiagram
 - **Admin** — full access to all resources, can manage users and members
 - **Member** — can view household data and edit their own profile
 
+## User provisioning
+
+There is no open registration. The admin creates user accounts. There are two
+ways to create a login:
+
+1. **Inline with member creation** — when creating a member via
+   `POST /v1/members`, provide `email` and `password` alongside the name.
+   This creates both the member and a linked user account in one step.
+2. **Standalone user creation** — use `POST /v1/users` to create a user
+   account independently (e.g. for an admin account without a member profile).
+
+The inline approach is the recommended workflow for adding household members
+who need to log in.
+
 ## Limitations
 
 - No password reset yet (planned)
