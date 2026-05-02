@@ -68,6 +68,12 @@ Each goal has a monthly plan (budget ÷ months). As deposits come in, actual
 allocations are created. The gap between planned and actual drives the
 "met / partial / missed" status shown in the UI.
 
+When an allocation is created or updated, a corresponding movement is
+recorded on the goal's account — debiting the allocated amount. This ensures
+the account balance always reflects what's truly available (unallocated).
+Deleting an allocation reverses the movement, returning money to the account.
+This creates a full audit trail of every allocation event.
+
 ### Expenses
 
 Spending from a goal's virtual envelope. Recording an expense reduces the
