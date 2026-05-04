@@ -12,13 +12,13 @@
 
 | Repo | Purpose | Status |
 |------|---------|--------|
-| hh-identity | Authentication, members, preferences | ✅ v0.1.0 |
-| hh-goals | Savings goals & envelope budgeting | ✅ Complete |
-| hh-investments | Investment portfolio tracking | ✅ Complete |
-| hh-finances | Income & expense tracking | ✅ Complete |
-| hh-web | Frontend SPA (React + Vite) | ✅ v0.3.0 |
+| hh-identity | Authentication, members, preferences | ✅ v0.1.1 |
+| hh-goals | Savings goals & envelope budgeting | ✅ v0.2.2 |
+| hh-investments | Investment portfolio tracking | ✅ v0.1.2 |
+| hh-finances | Income & expense tracking | ✅ v0.1.2 |
+| hh-web | Frontend SPA (React + Vite) | ✅ v0.8.0 |
 | hh-shared | Go library (middleware, validation, helpers) | ✅ Complete |
-| hh-infra | Orchestration (docker-compose, nginx) | 📋 Planned |
+| hh-infra | Orchestration (docker-compose, nginx) | ✅ Complete |
 | hh-docs | Platform documentation (this site) | Active |
 
 ## Service Dependencies
@@ -52,7 +52,7 @@ graph TD
     style SHARED fill:#8b5cf6,color:#fff
 ```
 
-Solid lines are current dependencies. Dotted lines are planned or runtime-only (JWKS).
+Solid lines are current dependencies. Dotted lines are runtime-only (JWKS).
 
 ## Authentication Flow
 
@@ -178,11 +178,13 @@ Services return typed error codes mapped to HTTP status:
 
 ### nginx
 
-Single entry point on `:80`. Strips service path prefix before forwarding:
+Single entry point on `:80`. Routes API requests by matching paths that contain `/v1/` (e.g. `location ~ ^/goals/v1/`). The service prefix is stripped before forwarding:
 
-- Browser: `GET /goals/v1/goals` → nginx: `GET /v1/goals` → `goals-svc:8080`
+- Browser: `GET /goals/v1/goals` → nginx: `GET /v1/goals` → `hh-goals:8080`
 
-Validates `Authorization` header exists (returns 401 if missing). Blocks internal `/_system/` endpoints.
+Frontend routes (e.g. `/investments/portfolio`) do not contain `/v1/` and fall through to the SPA catch-all, which proxies to hh-web. The SPA's own nginx serves `index.html` for all non-asset paths (`try_files $uri /index.html`).
+
+Blocks internal `/_system/` endpoints with 403.
 
 ### Port Mapping
 

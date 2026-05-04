@@ -35,9 +35,10 @@ Repository: [github.com/tiagorocha94/hh-web](https://github.com/tiagorocha94/hh-
 |--------|------|-------------|
 | Auth | `/login` | Login page, AuthContext, token management |
 | Members | `/members` | Household member list with DiceBear avatars |
-| Goals | `/goals/*` | Savings accounts, goals, allocations, expenses |
-| Investments | `/investments/*` | Types, entities, instruments, contributions, valuations |
-| Finances | `/finances/*` | Categories, accounts, transactions, imports, budgets |
+| Goals | `/goals/goals`, `/goals/accounts` | Savings accounts, goals, allocations, expenses |
+| Investments | `/investments/portfolio`, `/investments/types` | Types, entities, instruments, contributions, valuations |
+| Finances | `/finances/transactions`, `/finances/accounts`, `/finances/imports`, `/finances/categories` | Categories, accounts, transactions, imports, budgets |
+| Profile | `/profile` | User profile and preferences |
 
 ### API Integration
 
@@ -79,3 +80,9 @@ SPA fallback configured (`try_files $uri /index.html`).
 | v0.3.1 | API path refactor (hh-identity consolidation) |
 | v0.4.0 | Inline login creation in member form |
 | v0.4.1 | Goal status change UI (complete/cancel with surplus handling) |
+| v0.5.0 | Profile page, theme toggle |
+| v0.6.0 | Finances module (categories, accounts, transactions, imports, budgets) |
+| v0.6.1 | Bug fixes |
+| v0.6.2 | Bug fixes |
+| v0.7.0 | Investment dashboard, portfolio improvements |
+| v0.8.0 | URL-based tab routing (tabs map to sub-routes for deep-linking and refresh) |
