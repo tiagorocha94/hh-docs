@@ -1,15 +1,38 @@
 # Finances
 
-Household tracks income and expenses for each member. The primary input 
-method is importing statements as Excel files — the app parses transactions 
-automatically and organises them by category and budget group.
+Household tracks income and expenses for each member. The primary input
+method is importing CSV files — the app parses transactions automatically
+and organises them by category and budget group.
 
 ## Why import-based?
 
-Rather than manually typing every transaction, members export their statement 
-each month and upload it. The app reads the file, stores all transactions, 
-and links them to categories. This keeps the data accurate and the effort 
-low (one upload per month per member).
+Rather than manually typing every transaction, members export their statement
+each month and upload a CSV. The app reads the file, stores all transactions,
+and links them to categories. This keeps the data accurate and the effort
+low (one upload per month).
+
+## CSV Format
+
+The import expects a CSV file with the following columns:
+
+```csv
+Date,Person,Type,Amount,Currency,Category,Description
+2026-01-04,Alice,expense,20,EUR,Health,Pharmacy
+2026-01-25,Alice,income,3000,EUR,Salary,January salary
+```
+
+| Column | Required | Description |
+|--------|----------|-------------|
+| Date | Yes | Transaction date (YYYY-MM-DD) |
+| Person | Yes | Member name (resolved to member ID) |
+| Type | Yes | `expense` or `income` |
+| Amount | Yes | Positive decimal value |
+| Currency | No | Currency code (informational) |
+| Category | Yes | Category name (must exist in the system) |
+| Description | No | Free-text description |
+
+The "Person" column is resolved to a member ID by calling the identity service.
+This allows a single CSV to contain transactions for multiple household members.
 
 ## Core concepts
 
@@ -38,19 +61,14 @@ graph TD
     style G3 fill:#f59e0b,color:#fff
 ```
 
-### Accounts
-Bank or payment accounts belonging to a member — "CGD Conta Ordem",
-"Revolut". Accounts are auto-discovered during Excel import (the parser
-extracts the account name from the file) but can also be created manually.
-
 ### Transactions
-Individual financial movements parsed from an imported file. Each
+Individual financial movements parsed from an imported CSV. Each
 transaction has a type (income or expense), amount, date, description,
-and is linked to a category and an account. Transactions belong to a
-member through their file import.
+and is linked to a category and a member directly. There is no intermediate
+"account" concept — transactions belong to a member.
 
 ### File Imports
-One Excel upload per member per month. Re-uploading the same month
+One CSV upload per member per month. Re-uploading the same month
 replaces the previous import (cascade deletes old transactions). The
 import records the filename, row count, and timestamp.
 
@@ -66,6 +84,6 @@ versions are never mutated.
 1. Admin creates category groups: "Essential" (50%), "Leisure" (20%), "Savings" (30%)
 2. Categories are created: "Rent" → Essential, "Groceries" → Essential, "Streaming" → Leisure, etc.
 3. Alice sets her budget: income €3,000/month → Essential gets €1,500, Leisure €600, Savings €900
-4. At month end, Alice exports her bank statement and uploads the Excel file
-5. The app parses the transactions, links them to categories and her account
+4. At month end, Alice prepares a CSV with her transactions and uploads it
+5. The app parses the CSV, resolves "Alice" to her member ID, links transactions to categories
 6. Alice can now see her transactions organised by category and group

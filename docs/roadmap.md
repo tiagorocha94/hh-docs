@@ -98,12 +98,7 @@ serves pre-aggregated views: portfolio summaries, savings progress,
 expense breakdowns, per-member overviews, and household-wide KPIs.
 See [Dashboard Architecture](dashboard-architecture.md).
 
-## hh-infra (planned)
-
-### 🟡 Full-stack orchestration
-Docker Compose setup that runs all services from published images with
-nginx as the reverse proxy. Production-like deployment for personal use.
-See the hh-infra plan in the workspace.
+## hh-infra
 
 ### 🟡 Full-stack integration testing
 Compose all `-dev` images into a single docker-compose for automated

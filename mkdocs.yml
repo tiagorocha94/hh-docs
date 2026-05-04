@@ -35,6 +35,7 @@ nav:
       - hh-investments: repositories/hh-investments.md
       - hh-finances: repositories/hh-finances.md
       - hh-web: repositories/hh-web.md
+      - hh-infra: repositories/hh-infra.md
 
 markdown_extensions:
   - tables
