@@ -86,22 +86,22 @@ relevant once a notification system exists.
 
 ## hh-shared
 
-### 🔴 Shared HTTP client for inter-service communication
+### 🟡 Shared HTTP client for inter-service communication
 Services that call other services (e.g. hh-finances calling hh-identity to
-resolve member names) currently use Go's `http.DefaultClient` with no
-timeout, no authentication, and no request tracing. This is broken in
-practice because internal endpoints require a valid JWT.
+resolve member names) currently propagate the caller's JWT via context as a
+pragmatic workaround. This works but couples the downstream call to having
+an authenticated user in the request chain.
 
-A shared `httpclient` package in hh-shared should provide:
+A shared `httpclient` package in hh-shared could provide:
 
 - Configurable timeouts (connect, read, overall)
 - `User-Agent` header set to the calling service name and version
-- Helper to propagate the `Authorization` header from the incoming request
+- Helper to propagate the `Authorization` header from context
 - Helper to propagate the `X-Request-ID` header for distributed tracing
 - Optional service-account token injection for server-to-server calls
+  (e.g. background jobs with no user context)
 
-Until this is implemented, **CSV file import in hh-finances is broken**
-because the member name resolution call to hh-identity fails without auth.
+Not urgent — the current approach works for all existing use cases.
 
 ### 🟢 Configurable Postgres version in testutil
 `StartPostgresContainer` hardcodes `postgres:18-alpine`. Make the image
