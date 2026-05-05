@@ -12,11 +12,11 @@
 
 | Repo | Purpose | Status |
 |------|---------|--------|
-| hh-identity | Authentication, members, preferences | ✅ v0.1.1 |
-| hh-goals | Savings goals & envelope budgeting | ✅ v0.2.2 |
-| hh-investments | Investment portfolio tracking | ✅ v0.1.2 |
-| hh-finances | Income & expense tracking | ✅ v0.1.2 |
-| hh-web | Frontend SPA (React + Vite) | ✅ v0.8.0 |
+| hh-identity | Authentication, members, preferences | ✅ v0.2.2 |
+| hh-goals | Savings goals & envelope budgeting | ✅ v0.3.1 |
+| hh-investments | Investment portfolio tracking | ✅ v0.1.3 |
+| hh-finances | Income & expense tracking | ✅ v0.2.1 |
+| hh-web | Frontend SPA (React + Vite) | ✅ v0.9.0 |
 | hh-shared | Go library (middleware, validation, helpers) | ✅ Complete |
 | hh-infra | Orchestration (docker-compose, nginx) | ✅ Complete |
 | hh-docs | Platform documentation (this site) | Active |
@@ -178,11 +178,11 @@ Services return typed error codes mapped to HTTP status:
 
 ### nginx
 
-Single entry point on `:80`. Routes API requests by matching paths that contain `/v1/` (e.g. `location ~ ^/goals/v1/`). The service prefix is stripped before forwarding:
+Single entry point on `:80`. Routes API requests via the `/api/<service>/` prefix (e.g. `location /api/goals/`). The prefix is stripped before forwarding:
 
-- Browser: `GET /goals/v1/goals` → nginx: `GET /v1/goals` → `hh-goals:8080`
+- Browser: `GET /api/goals/v1/goals` → nginx: `GET /v1/goals` → `hh-goals:8080`
 
-Frontend routes (e.g. `/investments/portfolio`) do not contain `/v1/` and fall through to the SPA catch-all, which proxies to hh-web. The SPA's own nginx serves `index.html` for all non-asset paths (`try_files $uri /index.html`).
+Frontend routes (e.g. `/investments/portfolio`) have no `/api/` prefix and fall through to the SPA catch-all, which proxies to hh-web. The SPA's own nginx serves `index.html` for all non-asset paths (`try_files $uri /index.html`).
 
 Blocks internal `/_system/` endpoints with 403.
 

@@ -46,22 +46,22 @@ Uses pinned version tags with `ENV=production`. No seed data.
 
 | Service | Version |
 |---------|---------|
-| hh-identity | v0.2.1 |
-| hh-goals | v0.3.0 |
-| hh-finances | v0.1.4 |
-| hh-investments | v0.1.2 |
-| hh-web | v0.8.0 |
+| hh-identity | v0.2.2 |
+| hh-goals | v0.3.1 |
+| hh-finances | v0.2.1 |
+| hh-investments | v0.1.3 |
+| hh-web | v0.9.0 |
 
 ## Routing
 
-Nginx listens on port 80 and routes API requests by matching paths that contain `/v1/` (regex location blocks). The service prefix is stripped before forwarding. Frontend routes (e.g. `/investments/portfolio`) fall through to the SPA catch-all.
+Nginx listens on port 80 and routes API requests via the `/api/<service>/` prefix. The prefix is stripped before forwarding. Frontend routes (e.g. `/investments/portfolio`) fall through to the SPA catch-all.
 
 | Path Pattern | Service | Internal Port |
 |--------------|---------|---------------|
-| `/identity/v1/*` | hh-identity | 8080 |
-| `/goals/v1/*` | hh-goals | 8080 |
-| `/finances/v1/*` | hh-finances | 8080 |
-| `/investments/v1/*` | hh-investments | 8080 |
+| `/api/identity/*` | hh-identity | 8080 |
+| `/api/goals/*` | hh-goals | 8080 |
+| `/api/finances/*` | hh-finances | 8080 |
+| `/api/investments/*` | hh-investments | 8080 |
 | `/` (catch-all) | hh-web | 80 |
 
 ### Blocked Routes
