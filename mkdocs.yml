@@ -22,6 +22,7 @@ nav:
     - Savings Goals: features/goals.md
     - Investments: features/investments.md
     - Finances: features/finances.md
+    - Credits: features/credits.md
   - Roadmap: roadmap.md
   - Developers:
     - Architecture: architecture.md
@@ -34,6 +35,7 @@ nav:
       - hh-goals: repositories/hh-goals.md
       - hh-investments: repositories/hh-investments.md
       - hh-finances: repositories/hh-finances.md
+      - hh-credits: repositories/hh-credits.md
       - hh-web: repositories/hh-web.md
       - hh-infra: repositories/hh-infra.md
 

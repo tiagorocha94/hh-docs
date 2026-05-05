@@ -16,7 +16,8 @@
 | hh-goals | Savings goals & envelope budgeting | ✅ v0.3.1 |
 | hh-investments | Investment portfolio tracking | ✅ v0.1.3 |
 | hh-finances | Income & expense tracking | ✅ v0.2.1 |
-| hh-web | Frontend SPA (React + Vite) | ✅ v0.9.0 |
+| hh-credits | Credit/loan management | ✅ v0.1.3 |
+| hh-web | Frontend SPA (React + Vite) | ✅ v0.10.3 |
 | hh-shared | Go library (middleware, validation, helpers) | ✅ Complete |
 | hh-infra | Orchestration (docker-compose, nginx) | ✅ Complete |
 | hh-docs | Platform documentation (this site) | Active |
@@ -33,10 +34,12 @@ graph TD
         N --> GOALS[hh-goals]
         N --> INV[hh-investments]
         N --> FIN[hh-finances]
+        N --> CREDITS[hh-credits]
         IDENTITY --> PG
         GOALS --> PG
         INV --> PG
         FIN --> PG
+        CREDITS --> PG
     end
 
     SHARED[hh-shared<br/>Go library]
@@ -44,10 +47,12 @@ graph TD
     GOALS -->|imports| SHARED
     INV -->|imports| SHARED
     FIN -->|imports| SHARED
+    CREDITS -->|imports| SHARED
 
     GOALS -.->|JWKS| IDENTITY
     INV -.->|JWKS| IDENTITY
     FIN -.->|JWKS| IDENTITY
+    CREDITS -.->|JWKS| IDENTITY
 
     style SHARED fill:#8b5cf6,color:#fff
 ```

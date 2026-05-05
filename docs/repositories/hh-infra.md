@@ -50,7 +50,8 @@ Uses pinned version tags with `ENV=production`. No seed data.
 | hh-goals | v0.3.1 |
 | hh-finances | v0.2.1 |
 | hh-investments | v0.1.3 |
-| hh-web | v0.9.0 |
+| hh-credits | v0.1.3 |
+| hh-web | v0.10.3 |
 
 ## Routing
 
@@ -62,6 +63,7 @@ Nginx listens on port 80 and routes API requests via the `/api/<service>/` prefi
 | `/api/goals/*` | hh-goals | 8080 |
 | `/api/finances/*` | hh-finances | 8080 |
 | `/api/investments/*` | hh-investments | 8080 |
+| `/api/credits/*` | hh-credits | 8080 |
 | `/` (catch-all) | hh-web | 80 |
 
 ### Blocked Routes
