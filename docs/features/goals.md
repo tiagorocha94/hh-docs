@@ -38,35 +38,22 @@ When a goal is completed with a positive balance, the surplus can optionally
 be returned to an account as a movement. If no account is selected, the
 surplus stays as unallocated balance on the goal's account.
 
-### Deposits and auto-distribution
+### Deposits and allocations
 
-When you record a deposit into an account, the system automatically
-distributes it across **active goals on that account**. Goals closest to
-their deadline get funded first. If there's money left over after all goals
-are satisfied for the month, it stays as unallocated balance on that account.
+When you record a deposit into an account, it increases the account balance.
+You then manually allocate funds to goals via the allocations API. This
+gives full flexibility over how money is distributed — you decide which goals
+get funded and by how much.
 
-```mermaid
-graph TD
-    D[Deposit €800 into<br/>Household Savings] --> C[Compute unallocated<br/>on this account]
-    C --> S[Sort account goals<br/>by deadline]
-    S --> G1[Holiday<br/>needs €267]
-    S --> G2[Car<br/>needs €400]
-    S --> G3[Emergency<br/>needs €200]
-    G1 --> A1[Allocate €267]
-    G2 --> A2[Allocate €400]
-    G3 --> A3[Allocate €133<br/>remaining]
-
-    style D fill:#6366f1,color:#fff
-    style A1 fill:#22c55e,color:#fff
-    style A2 fill:#22c55e,color:#fff
-    style A3 fill:#f59e0b,color:#fff
-```
+The planned allocations (budget ÷ months) serve as a guide, showing how much
+each goal "needs" per month. The UI shows whether each month is met, partial,
+or missed based on the actual allocation compared to the plan.
 
 ### Allocations
 
-Each goal has a monthly plan (budget ÷ months). As deposits come in, actual
-allocations are created. The gap between planned and actual drives the
-"met / partial / missed" status shown in the UI.
+Each goal has a monthly plan (budget ÷ months). As you manually allocate
+funds to goals, actual allocations are created. The gap between planned and
+actual drives the "met / partial / missed" status shown in the UI.
 
 When an allocation is created or updated, a corresponding movement is
 recorded on the goal's account — debiting the allocated amount. This ensures
@@ -101,8 +88,8 @@ Alice's Savings (member_id = Alice)
 └── Mortgage Overpayment (personal goal)
 ```
 
-- Deposits into "Household Savings" only distribute to goals on that account
-- Deposits into "Alice's Savings" only distribute to Alice's personal goals
+- Allocations on goals within "Household Savings" debit that account
+- Allocations on goals within "Alice's Savings" debit Alice's account
 - Surplus from a completed goal stays in the same account
 
 ## Example flow
@@ -111,7 +98,9 @@ Alice's Savings (member_id = Alice)
 2. Create a personal account "Alice's Savings"
 3. Create a shared goal "Summer Holiday" on Household Savings — budget €3,200
 4. Create a personal goal "Mortgage Extra" on Alice's Savings — budget €2,000
-5. Each month, deposit €800 into Household Savings → auto-distributes to shared goals
-6. Each month, deposit €200 into Alice's Savings → auto-distributes to Alice's goals
-7. Book flights → record an expense of €450 against Summer Holiday
-8. When the holiday is done, mark the goal as completed — surplus stays in Household Savings
+5. Each month, deposit €800 into Household Savings
+6. Manually allocate funds to shared goals (e.g. €267 to Holiday, €400 to Car)
+7. Each month, deposit €200 into Alice's Savings
+8. Manually allocate funds to Alice's personal goals
+9. Book flights → record an expense of €450 against Summer Holiday
+10. When the holiday is done, mark the goal as completed — surplus stays in Household Savings

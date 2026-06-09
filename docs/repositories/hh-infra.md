@@ -47,11 +47,11 @@ Uses pinned version tags with `ENV=production`. No seed data.
 | Service | Version |
 |---------|---------|
 | hh-identity | v0.2.2 |
-| hh-goals | v0.3.1 |
+| hh-goals | v0.4.0 |
 | hh-finances | v0.2.1 |
 | hh-investments | v0.1.3 |
 | hh-credits | v0.1.3 |
-| hh-web | v0.10.3 |
+| hh-web | v0.10.4 |
 
 ## Routing
 

@@ -11,7 +11,6 @@ Household gives a family a single place to manage money together:
 - **Members** — define who's in the household (names, avatars, roles)
 - **Authentication** — secure login with email and password, JWT-based sessions
 - **Savings goals** — envelope budgeting where every saved euro gets a job
-- **Auto-distribution** — deposits are automatically split across active goals by urgency
 - **Investments** — track investment instruments, contributions, and valuations
 - **Finances** — import bank statements and track spending by category
 

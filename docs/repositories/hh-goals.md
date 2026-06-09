@@ -11,7 +11,6 @@ For what this service does and how it works, see [Features > Savings Goals](../f
 - Database: `hh_goals`
 - Accounts can be household-wide (member_id = NULL) or personal (member_id set)
 - Every goal belongs to exactly one account (account_id NOT NULL)
-- Auto-distribution scopes to the account: deposits only distribute to goals on that account
 - Account balances are always derived from movements, never stored
 - Goal versioning: budget/target_date changes create a new version with regenerated planned allocations
 
@@ -25,7 +24,7 @@ For what this service does and how it works, see [Features > Savings Goals](../f
 | PUT | `/v1/accounts/{id}` | Bearer | Update account |
 | DELETE | `/v1/accounts/{id}` | Bearer | Delete account |
 | GET | `/v1/accounts/{id}/movements` | Bearer | List movements |
-| POST | `/v1/accounts/{id}/movements` | Bearer | Record movement (triggers auto-distribution) |
+| POST | `/v1/accounts/{id}/movements` | Bearer | Record movement |
 | DELETE | `/v1/accounts/{id}/movements/{mid}` | Bearer | Delete movement |
 | GET | `/v1/goals` | Bearer | List goals |
 | POST | `/v1/goals` | Bearer | Create goal |
