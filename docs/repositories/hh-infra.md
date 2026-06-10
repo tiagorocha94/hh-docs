@@ -51,7 +51,7 @@ Uses pinned version tags with `ENV=production`. No seed data.
 | hh-finances | v0.2.1 |
 | hh-investments | v0.1.3 |
 | hh-credits | v0.1.3 |
-| hh-web | v0.10.4 |
+| hh-web | v0.10.5 |
 
 ## Routing
 

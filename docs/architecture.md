@@ -17,7 +17,7 @@
 | hh-investments | Investment portfolio tracking | ✅ v0.1.3 |
 | hh-finances | Income & expense tracking | ✅ v0.2.1 |
 | hh-credits | Credit/loan management | ✅ v0.1.3 |
-| hh-web | Frontend SPA (React + Vite) | ✅ v0.10.4 |
+| hh-web | Frontend SPA (React + Vite) | ✅ v0.10.5 |
 | hh-shared | Go library (middleware, validation, helpers) | ✅ Complete |
 | hh-infra | Orchestration (docker-compose, nginx) | ✅ Complete |
 | hh-docs | Platform documentation (this site) | Active |

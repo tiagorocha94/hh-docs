@@ -21,4 +21,4 @@ architecture, and onboarding.
 | [hh-goals](https://github.com/tiagorocha94/hh-goals) | Savings goals, accounts, allocations | [hh-goals](docs/repositories/hh-goals.md) | v0.4.0 |
 | [hh-investments](https://github.com/tiagorocha94/hh-investments) | Investment portfolio tracking | [hh-investments](docs/repositories/hh-investments.md) | v0.1.0 |
 | [hh-finances](https://github.com/tiagorocha94/hh-finances) | Income & expense tracking | [hh-finances](docs/repositories/hh-finances.md) | v0.1.0 |
-| [hh-web](https://github.com/tiagorocha94/hh-web) | Frontend SPA (React + Vite) | [hh-web](docs/repositories/hh-web.md) | v0.10.4 |
+| [hh-web](https://github.com/tiagorocha94/hh-web) | Frontend SPA (React + Vite) | [hh-web](docs/repositories/hh-web.md) | v0.10.5 |
